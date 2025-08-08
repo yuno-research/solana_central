@@ -69,8 +69,9 @@ pub struct RaydiumConstants {
   pub launchpad_program: Pubkey,
   pub launchpad_authority: Pubkey,
   pub cpmm_swap_discriminator: [u8; 8],
-  pub launchpad_buy_instruction_discriminator: [u8; 8],
-  pub launchpad_sell_instruction_discriminator: [u8; 8],
+  pub launchpad_swap_discriminators: [[u8; 8]; 4],
+  pub cpmm_create_pool_instruction_discriminator: [u8; 8],
+  pub ammv4_create_pool_instruction_discriminator: u8,
 }
 
 pub const RAYDIUM_CONSTANTS: RaydiumConstants = RaydiumConstants {
@@ -85,8 +86,19 @@ pub const RAYDIUM_CONSTANTS: RaydiumConstants = RaydiumConstants {
   launchpad_program: Pubkey::from_str_const("LanMV9sAd7wArD4vJFi2qDdfnVhFxYSUg6eADduJ3uj"),
   launchpad_authority: Pubkey::from_str_const("WLHv2UAZm6z4KyaaELi5pjdbJh6RESMva1Rnn8pJVVh"),
   cpmm_swap_discriminator: [143, 190, 90, 218, 196, 30, 51, 222],
-  launchpad_buy_instruction_discriminator: [250, 234, 13, 123, 213, 156, 19, 236],
-  launchpad_sell_instruction_discriminator: [149, 39, 222, 155, 211, 124, 152, 26],
+  cpmm_create_pool_instruction_discriminator: [175, 175, 109, 31, 13, 152, 155, 237],
+  ammv4_create_pool_instruction_discriminator: 1,
+  // The set of all discriminators for all possible launchpad swap instructions
+  launchpad_swap_discriminators: [
+    // Buy exact in
+    [250, 234, 13, 123, 213, 156, 19, 236],
+    // Sell exact in
+    [149, 39, 222, 155, 211, 124, 152, 26],
+    // Buy exact out
+    [24, 211, 116, 40, 105, 3, 153, 56],
+    // Sell exact out
+    [95, 200, 71, 34, 8, 9, 11, 166],
+  ]
 };
 
 /// Constants for the Meteora program
