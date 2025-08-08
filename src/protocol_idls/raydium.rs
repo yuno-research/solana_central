@@ -216,3 +216,13 @@ pub struct LaunchpadTradeEventIdl {
   pub trade_direction: u8,
   pub pool_status: u8,
 }
+
+
+#[derive(BorshDeserialize)]
+pub struct CpmmInitializeInstructionDataIdl {
+  discriminator: [u8; 8],
+  pub init_amount_0: u64,
+  pub init_amount_1: u64,
+  pub open_time: u64,
+}
+
