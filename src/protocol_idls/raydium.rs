@@ -226,3 +226,11 @@ pub struct CpmmInitializeInstructionDataIdl {
   pub open_time: u64,
 }
 
+#[derive(BorshDeserialize)]
+pub struct AmmV4Initialize2InstructionDataIdl {
+  pub discriminator: u8,
+  pub nonce: u8,
+  pub open_time: u64,
+  pub init_pc_amount: u64,
+  pub init_coin_amount: u64,
+}
