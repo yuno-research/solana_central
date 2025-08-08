@@ -13,12 +13,10 @@ impl RaydiumCpmmPool {
         pool_address: pubkey,
         token_a_address: decoded_layout.mint_a,
         token_b_address: decoded_layout.mint_b,
-        pool_type: Pools::RaydiumAmmV4,
+        pool_type: Pools::RaydiumCpmm,
         token_a_vault_address: decoded_layout.vault_a,
         token_b_vault_address: decoded_layout.vault_b,
       },
-      token_a_decimals: decoded_layout.mint_decimal_a,
-      token_b_decimals: decoded_layout.mint_decimal_b,
       pool_config_account: decoded_layout.config_id,
       observation_state_account: decoded_layout.observation_id,
       // Account layout doesn't contain these balances, so we set them to 0

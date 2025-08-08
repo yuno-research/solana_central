@@ -21,8 +21,6 @@ because Serum and Openbook are no longer in use for these AMMs.
 #[derive(Debug)]
 pub struct RaydiumAmmV4Pool {
   pub info: Pool,
-  pub token_a_decimals: u8,
-  pub token_b_decimals: u8,
   pub token_a_vault_amount: u64,
   pub token_b_vault_amount: u64,
   pub swap_fee_numerator: u64,

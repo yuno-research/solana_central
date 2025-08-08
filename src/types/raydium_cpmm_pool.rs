@@ -11,8 +11,6 @@ use std::sync::Arc;
 
 pub struct RaydiumCpmmPool {
   pub info: Pool,
-  pub token_a_decimals: u8,
-  pub token_b_decimals: u8,
   pub pool_config_account: Pubkey,
   pub observation_state_account: Pubkey,
   pub token_a_vault_amount: u64,

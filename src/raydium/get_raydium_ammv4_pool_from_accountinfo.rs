@@ -20,9 +20,6 @@ impl RaydiumAmmV4Pool {
       },
       swap_fee_numerator: decoded_layout.swap_fee_numerator,
       swap_fee_denominator: decoded_layout.swap_fee_denominator,
-
-      token_a_decimals: decoded_layout.base_decimal as u8,
-      token_b_decimals: decoded_layout.quote_decimal as u8,
       // Account layout doesn't contain these balances, so we set them to 0
       token_a_vault_amount: 0,
       token_b_vault_amount: 0,
