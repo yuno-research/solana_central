@@ -17,7 +17,6 @@ pub struct SwapTx {
   pub amount_out: u64,
   pub index: u64,
   pub slot: u64,
-  pub block_time: u64,
   pub signature: Signature,
   pub token_a_address: Pubkey,
   pub token_b_address: Pubkey,
