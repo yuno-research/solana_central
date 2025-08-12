@@ -68,10 +68,11 @@ pub struct RaydiumConstants {
   pub launchpad_event_authority: Pubkey,
   pub launchpad_program: Pubkey,
   pub launchpad_authority: Pubkey,
-  pub cpmm_swap_discriminator: [u8; 8],
+  pub cpmm_swap_discriminators: [[u8; 8]; 2],
   pub launchpad_swap_discriminators: [[u8; 8]; 4],
   pub cpmm_create_pool_instruction_discriminator: [u8; 8],
   pub ammv4_create_pool_instruction_discriminator: u8,
+  pub ammv4_swap_discriminators: [u8; 2],
 }
 
 pub const RAYDIUM_CONSTANTS: RaydiumConstants = RaydiumConstants {
@@ -85,7 +86,18 @@ pub const RAYDIUM_CONSTANTS: RaydiumConstants = RaydiumConstants {
   launchpad_event_authority: Pubkey::from_str_const("2DPAtwB8L12vrMRExbLuyGnC7n2J5LNoZQSejeQGpwkr"),
   launchpad_program: Pubkey::from_str_const("LanMV9sAd7wArD4vJFi2qDdfnVhFxYSUg6eADduJ3uj"),
   launchpad_authority: Pubkey::from_str_const("WLHv2UAZm6z4KyaaELi5pjdbJh6RESMva1Rnn8pJVVh"),
-  cpmm_swap_discriminator: [143, 190, 90, 218, 196, 30, 51, 222],
+  /*
+  Cpmm has two swap discriminators, swap exact in and swap exact out. Direction is determined by
+  the order of input and output vault/mint accounts.
+  */
+  cpmm_swap_discriminators: [
+    // Swap exact in
+    [143, 190, 90, 218, 196, 30, 51, 222],
+    // Swap exact out
+    [55, 217, 98, 86, 163, 74, 180, 173],
+  ],
+  // Ammv4 also uses swap exact in and swap exact out instructions, but the discriminator is 1 byte
+  ammv4_swap_discriminators: [9, 11],
   cpmm_create_pool_instruction_discriminator: [175, 175, 109, 31, 13, 152, 155, 237],
   ammv4_create_pool_instruction_discriminator: 1,
   // The set of all discriminators for all possible launchpad swap instructions
@@ -98,7 +110,7 @@ pub const RAYDIUM_CONSTANTS: RaydiumConstants = RaydiumConstants {
     [24, 211, 116, 40, 105, 3, 153, 56],
     // Sell exact out
     [95, 200, 71, 34, 8, 9, 11, 166],
-  ]
+  ],
 };
 
 /// Constants for the Meteora program
