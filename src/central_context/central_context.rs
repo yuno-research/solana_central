@@ -3,11 +3,13 @@ use crate::types::pf_bonding_curve::PfBondingCurve;
 use crate::types::pool::PoolTrait;
 use crate::types::raydium_launchpad::RaydiumLaunchpad;
 use solana_client;
+use solana_client::rpc_client::RpcClient;
 use solana_sdk::hash::Hash;
 use solana_sdk::pubkey::Pubkey;
 use std::collections::HashMap;
 use std::env;
 use std::sync::{Arc, Mutex, RwLock};
+use std::time::Duration;
 
 pub struct CentralContext {
   /*
@@ -77,13 +79,17 @@ pub struct CentralContext {
 impl CentralContext {
   pub fn new() -> Self {
     let rpc_url = env::var("RPC_NODE_URL").expect("RPC_NODE_URL must be set");
-    let json_rpc_client = solana_client::rpc_client::RpcClient::new(&rpc_url);
+    let json_rpc_client = RpcClient::new_with_timeout(&rpc_url, Duration::from_secs(300));
+    let json_rpc_client_async = solana_client::nonblocking::rpc_client::RpcClient::new_with_timeout(
+      rpc_url,
+      Duration::from_secs(300),
+    );
 
     CentralContext {
       markets: RwLock::new(HashMap::new()),
       pf_bonding_curves: Mutex::new(HashMap::new()),
       json_rpc_client,
-      json_rpc_client_async: solana_client::nonblocking::rpc_client::RpcClient::new(rpc_url),
+      json_rpc_client_async,
       raydium_cpmm_fee_rates_lp: HashMap::new(),
       raydium_launchpads: Mutex::new(HashMap::new()),
       raydium_launchpad_platform_fee_rates_lp: HashMap::new(),
