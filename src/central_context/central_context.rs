@@ -1,3 +1,5 @@
+use crate::constants::PUMP_CONSTANTS;
+use crate::constants::RAYDIUM_CONSTANTS;
 use crate::types::meteora_vault::MeteoraVault;
 use crate::types::pf_bonding_curve::PfBondingCurve;
 use crate::types::pool::PoolTrait;
@@ -7,6 +9,7 @@ use solana_client::rpc_client::RpcClient;
 use solana_sdk::hash::Hash;
 use solana_sdk::pubkey::Pubkey;
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::env;
 use std::sync::{Arc, Mutex, RwLock};
 use std::time::Duration;
@@ -56,7 +59,21 @@ pub struct CentralContext {
   market address, and the value will be the pool itself
   */
   pub raydium_launchpads: Mutex<HashMap<Pubkey, Arc<RwLock<RaydiumLaunchpad>>>>,
+  /*
+  Legit tokens. A map of token addresses to boolean legit or not. We consider a token legit if it
+  there exists a metaplex pda for it and if the update authority in the metaplex pda metadata
+  account is from a legit launchpad, such as Raydium Launchpad or Pumpfun Bonding Curve. This is
+  because tokens launched on these reputable launchpads will always have metaplex metadata and the
+  correct update authority.
 
+  Done as a mutex because in many cases you'll atomically lock, check if entry exists, if not
+  lookup and add in an entry.
+  */
+  pub legit_tokens: Mutex<HashMap<Pubkey, bool>>,
+  /*
+  A set of all legit update authorities which are used to identify legit tokens.
+  */
+  pub legit_update_authorities: HashSet<Pubkey>,
   /*
   A hash map of token accounts and the pools that those token accounts are a part of. The same pool
   here can be looked up by these 3 Solana pubkey accounts that will be unique to it:
@@ -85,7 +102,13 @@ impl CentralContext {
       Duration::from_secs(300),
     );
 
-    CentralContext {
+    let mut legit_update_authorities = HashSet::new();
+    // Raydium launchpad update authority
+    legit_update_authorities.insert(RAYDIUM_CONSTANTS.launchpad_authority);
+    // Pumpfun bonding curve update authority
+    legit_update_authorities.insert(PUMP_CONSTANTS.bonding_curve_update_authority);
+
+    Self {
       markets: RwLock::new(HashMap::new()),
       pf_bonding_curves: Mutex::new(HashMap::new()),
       json_rpc_client,
@@ -97,6 +120,8 @@ impl CentralContext {
       current_slot: RwLock::new(0),
       pools_map: RwLock::new(HashMap::new()),
       latest_blockhash: RwLock::new(Hash::default()),
+      legit_tokens: Mutex::new(HashMap::new()),
+      legit_update_authorities,
     }
   }
 }
