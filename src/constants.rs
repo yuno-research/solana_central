@@ -125,8 +125,10 @@ pub struct MeteoraConstants {
   pub dammv2_max_fee_numerator: u64,
   pub dammv2_max_fee_denominator: u128,
   pub dbc_program: Pubkey,
-  dbc_pool_authority: Pubkey,
-  dbc_event_authority: Pubkey,
+  pub dbc_pool_authority: Pubkey,
+  pub dbc_event_authority: Pubkey,
+  pub dbc_swap_discriminator: [u8; 8],
+
 }
 
 pub const METEORA_CONSTANTS: MeteoraConstants = MeteoraConstants {
@@ -142,6 +144,7 @@ pub const METEORA_CONSTANTS: MeteoraConstants = MeteoraConstants {
   dbc_program: Pubkey::from_str_const("dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN"),
   dbc_pool_authority: Pubkey::from_str_const("FhVo3mqL8PW5pH5U2CN4XE33DokiyZnUwuGpH2hmHLuM"),
   dbc_event_authority: Pubkey::from_str_const("8Ks12pbrD6PXxfty1hVQiE9sc289zgU1zHkvXhrSdriF"),
+  dbc_swap_discriminator: [248, 198, 158, 145, 225, 117, 135, 200]
 };
 pub enum TokenProgramsEnum {
   TokenStandard,
