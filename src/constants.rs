@@ -19,6 +19,7 @@ pub struct PumpConstants {
   pub bonding_curve_global_config: Pubkey,
   pub bonding_curve_program: Pubkey,
   pub bonding_curve_event_authority: Pubkey,
+  pub bonding_curve_update_authority: Pubkey,
   pub pump_swap_migrator_wallet: Pubkey,
   pub pump_swap_program: Pubkey,
   pub pump_swap_global_config: Pubkey,
@@ -43,6 +44,7 @@ pub const PUMP_CONSTANTS: PumpConstants = PumpConstants {
   bonding_curve_event_authority: Pubkey::from_str_const(
     "Ce6TQqeHC9p8KetsN6JsjHK7UTZk7nasjjnr7XxXp9F1",
   ),
+  bonding_curve_update_authority: Pubkey::from_str_const("TSLvdd1pWpHVjahSpsvCXUbgwsL3JAcvokwaKt1eokM"),
   pump_swap_migrator_wallet: Pubkey::from_str_const("39azUYFWPz3VHgKCf3VChUwbpURdCHRxjWVowf5jUJjg"),
   pump_swap_program: Pubkey::from_str_const("pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"),
   pump_swap_global_config: Pubkey::from_str_const("ADyA8hdefvWN2dbGGWFotbzWxrAvLW83WG6QCVXvJKqw"),
@@ -154,6 +156,7 @@ pub struct SolanaPrograms {
   pub system_program: Pubkey,
   pub associated_token_program: Pubkey,
   pub compute_budget_program: Pubkey,
+  pub metaplex_program: Pubkey,
 }
 
 pub const SOLANA_PROGRAMS: SolanaPrograms = SolanaPrograms {
@@ -162,6 +165,7 @@ pub const SOLANA_PROGRAMS: SolanaPrograms = SolanaPrograms {
   system_program: Pubkey::from_str_const("11111111111111111111111111111111"),
   associated_token_program: Pubkey::from_str_const("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"),
   compute_budget_program: Pubkey::from_str_const("ComputeBudget111111111111111111111111111111"),
+  metaplex_program: Pubkey::from_str_const("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"),
 };
 
 pub struct PoolsAccountSizes {
