@@ -1,15 +1,13 @@
 use crate::central_context::central_context::CentralContext;
 use crate::constants::LAMPORTS_PER_SOL;
-use crate::protocol_idls::meteora::PoolFees;
-use crate::types::amm_pool::AmmPool;
 use crate::types::meteora_vault::MeteoraVault;
 use crate::types::pool::Pool;
 use crate::types::pool::PoolTrait;
 use crate::types::pools::Pools;
-use borsh::BorshDeserialize;
 use solana_sdk::pubkey::Pubkey;
 use std::any::Any;
 use std::sync::{Arc, RwLock};
+
 /*
 This struct contains the data that is UNIQUE to a specific AMM Pool on Meteora. For shared data,
 such as vaults for tokens, because they are shared across all AMM pools in the Meteora protocol,
@@ -43,7 +41,7 @@ pub struct MeteoraAmmPool {
   pub protocol_trade_fee_denominator: u128,
 }
 
-impl AmmPool for MeteoraAmmPool {
+impl PoolTrait for MeteoraAmmPool {
   fn token_a_amount_units(&self) -> u64 {
     let token_a_vault_guard = self.token_a_vault.read().unwrap();
     if token_a_vault_guard.lp_supply == 0 {
@@ -62,9 +60,7 @@ impl AmmPool for MeteoraAmmPool {
         / token_b_vault_guard.lp_supply as u128) as u64
     }
   }
-}
 
-impl PoolTrait for MeteoraAmmPool {
   fn pool_address(&self) -> &Pubkey {
     &self.info.pool_address
   }

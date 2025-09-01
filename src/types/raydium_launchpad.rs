@@ -1,7 +1,6 @@
 use crate::central_context::central_context::CentralContext;
 use crate::constants::LAMPORTS_PER_SOL;
 use crate::protocol_idls::raydium::LaunchpadPoolIdl;
-use crate::types::amm_pool::AmmPool;
 use crate::types::pool::Pool;
 use crate::types::pool::PoolTrait;
 use crate::types::pools::Pools;
@@ -25,7 +24,7 @@ pub struct RaydiumLaunchpad {
   pub real_token_b_reserve: u64,
 }
 
-impl AmmPool for RaydiumLaunchpad {
+impl PoolTrait for RaydiumLaunchpad {
   fn token_a_amount_units(&self) -> u64 {
     // A is the base token which is being sold as the launchpad progresses
     self.virtual_token_a_reserve - self.real_token_a_reserve
@@ -34,9 +33,7 @@ impl AmmPool for RaydiumLaunchpad {
     // B is the quote token which fills up as the launchpad progresses
     self.virtual_token_b_reserve + self.real_token_b_reserve
   }
-}
 
-impl PoolTrait for RaydiumLaunchpad {
   fn pool_address(&self) -> &Pubkey {
     &self.info.pool_address
   }

@@ -1,4 +1,3 @@
-pub mod amm_pool;
 pub mod meteora_amm_pool;
 pub mod meteora_dammv2_pool;
 pub mod meteora_vault;

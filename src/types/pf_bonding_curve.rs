@@ -3,7 +3,6 @@ use crate::constants::LAMPORTS_PER_SOL;
 use crate::constants::TOKENS;
 use crate::types::pool::PoolTrait;
 use crate::types::pools::Pools;
-use borsh::BorshDeserialize;
 use solana_sdk::pubkey::Pubkey;
 use std::any::Any;
 use std::sync::Arc;
@@ -69,5 +68,13 @@ impl PoolTrait for PfBondingCurve {
       .unwrap()
       .data;
     self.update_state_from_data(&data);
+  }
+
+  fn token_a_amount_units(&self) -> u64 {
+    self.token_reserves
+  }
+
+  fn token_b_amount_units(&self) -> u64 {
+    self.sol_reserves
   }
 }

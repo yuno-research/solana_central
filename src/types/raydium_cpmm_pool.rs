@@ -1,10 +1,8 @@
 use crate::central_context::central_context::CentralContext;
 use crate::constants::LAMPORTS_PER_SOL;
-use crate::types::amm_pool::AmmPool;
 use crate::types::pool::Pool;
 use crate::types::pool::PoolTrait;
 use crate::types::pools::Pools;
-use borsh::BorshDeserialize;
 use solana_sdk::pubkey::Pubkey;
 use std::any::Any;
 use std::sync::Arc;
@@ -17,16 +15,14 @@ pub struct RaydiumCpmmPool {
   pub token_b_vault_amount: u64,
 }
 
-impl AmmPool for RaydiumCpmmPool {
+impl PoolTrait for RaydiumCpmmPool {
   fn token_a_amount_units(&self) -> u64 {
     self.token_a_vault_amount
   }
   fn token_b_amount_units(&self) -> u64 {
     self.token_b_vault_amount
   }
-}
 
-impl PoolTrait for RaydiumCpmmPool {
   fn pool_address(&self) -> &Pubkey {
     &self.info.pool_address
   }

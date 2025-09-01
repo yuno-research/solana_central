@@ -1,13 +1,13 @@
 use crate::central_context::central_context::CentralContext;
+use crate::constants::LAMPORTS_PER_SOL;
 use crate::types::pool::{Pool, PoolTrait};
 use crate::types::pools::Pools;
-use primitive_types::{U256, U512};
+use primitive_types::U512;
 use solana_sdk::pubkey::Pubkey;
 use std::any::Any;
 use std::cmp::min;
 use std::sync::Arc;
 use std::time::{SystemTime, UNIX_EPOCH};
-use crate::constants::LAMPORTS_PER_SOL;
 
 const FEE_DENOMINATOR: u64 = 1_000_000_000;
 const MAX_FEE_NUMERATOR: u64 = 990_000_000;
@@ -170,10 +170,16 @@ impl PoolTrait for MeteoraDbc {
   fn price_b_over_a_lp(&self) -> u128 {
     let price = U512::from(self.sqrt_price).pow(U512::from(2));
     let two_pow_128 = U512::from(1) << 128; // Represents (2^64)^2
-    ( price * U512::from(LAMPORTS_PER_SOL) / two_pow_128).as_u128()
+    (price * U512::from(LAMPORTS_PER_SOL) / two_pow_128).as_u128()
   }
 
-  fn fetch_market_state_from_rpc(&mut self, central_context: &Arc<CentralContext>) {
-    
+  // TODO implement these 3
+  fn fetch_market_state_from_rpc(&mut self, central_context: &Arc<CentralContext>) {}
+
+  fn token_a_amount_units(&self) -> u64 {
+    0
+  }
+  fn token_b_amount_units(&self) -> u64 {
+    0
   }
 }

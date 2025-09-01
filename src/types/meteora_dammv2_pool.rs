@@ -2,7 +2,6 @@ use crate::central_context::central_context::CentralContext;
 use crate::constants::LAMPORTS_PER_SOL;
 use crate::constants::METEORA_CONSTANTS;
 use crate::protocol_idls::meteora::MeteoraDammv2PoolIdl;
-use crate::types::amm_pool::AmmPool;
 use crate::types::pool::Pool;
 use crate::types::pool::PoolTrait;
 use crate::types::pools::Pools;
@@ -44,7 +43,7 @@ pub struct MeteoraDammV2Pool {
   pub sqrt_max_price: u128,
 }
 
-impl AmmPool for MeteoraDammV2Pool {
+impl PoolTrait for MeteoraDammV2Pool {
   fn token_a_amount_units(&self) -> u64 {
     // Validate price bounds and liquidity
     if self.sqrt_price < self.sqrt_min_price
@@ -123,9 +122,7 @@ impl AmmPool for MeteoraDammV2Pool {
 
     result.as_u64()
   }
-}
 
-impl PoolTrait for MeteoraDammV2Pool {
   fn pool_address(&self) -> &Pubkey {
     &self.info.pool_address
   }
