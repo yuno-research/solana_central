@@ -1,6 +1,6 @@
 // Representation of 1 byte used for efficiency
 #[repr(u8)]
-#[derive(Debug, Eq, PartialEq, Clone)]
+#[derive(Debug, Eq, PartialEq, Clone, Copy)]
 pub enum Pools {
   MeteoraAmm = 0,
   RaydiumCpmm = 1,
