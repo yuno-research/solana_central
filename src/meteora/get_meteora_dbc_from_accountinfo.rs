@@ -22,6 +22,8 @@ impl MeteoraDbc {
         token_b_vault_address: dbc_virtual_pool.quote_vault,
         pool_type: Pools::MeteoraDbc,
       },
+      
+      config: pubkey,
 
       sqrt_price: dbc_virtual_pool.sqrt_price,
 
