@@ -34,6 +34,7 @@ pub enum ActivationType {
 // TODO use our own sol token account in the referral fee if we are trading with sol
 pub struct MeteoraDbc {
   pub pool: Pool,
+  pub config: Pubkey,
   /*
   The price in lamports of 1 token a in terms of token b (quote token). This is the same format used
   as sqrt price and we will just convert this over to lamports to maintain precision just like is
