@@ -20,10 +20,13 @@ pub struct PumpConstants {
   pub bonding_curve_program: Pubkey,
   pub bonding_curve_event_authority: Pubkey,
   pub bonding_curve_update_authority: Pubkey,
+  pub bonding_curve_fee_config: Pubkey,
   pub pump_swap_migrator_wallet: Pubkey,
   pub pump_swap_program: Pubkey,
   pub pump_swap_global_config: Pubkey,
   pub pump_swap_event_authority: Pubkey,
+  pub global_volume_accumulator: Pubkey,
+  pub fee_program: Pubkey,
   /*
   Both the pumpswap and pf bonding curve programs use the same buy and sell instruction
   discriminators.
@@ -45,10 +48,13 @@ pub const PUMP_CONSTANTS: PumpConstants = PumpConstants {
     "Ce6TQqeHC9p8KetsN6JsjHK7UTZk7nasjjnr7XxXp9F1",
   ),
   bonding_curve_update_authority: Pubkey::from_str_const("TSLvdd1pWpHVjahSpsvCXUbgwsL3JAcvokwaKt1eokM"),
+  bonding_curve_fee_config: Pubkey::from_str_const("8Wf5TiAheLUqBrKXeYg2JtAFFMWtKdG2BSFgqUcPVwTt"),
   pump_swap_migrator_wallet: Pubkey::from_str_const("39azUYFWPz3VHgKCf3VChUwbpURdCHRxjWVowf5jUJjg"),
   pump_swap_program: Pubkey::from_str_const("pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"),
   pump_swap_global_config: Pubkey::from_str_const("ADyA8hdefvWN2dbGGWFotbzWxrAvLW83WG6QCVXvJKqw"),
   pump_swap_event_authority: Pubkey::from_str_const("GS4CU59F31iL7aR2Q8zVS8DRrcRnXX1yjQ66TqNVQnaR"),
+  global_volume_accumulator: Pubkey::from_str_const("Hq2wp8uJ9jCPsYgNHex8RtqdvMPfVGoYwjvF1ATiwn2Y"),
+  fee_program: Pubkey::from_str_const("pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ"),
   buy_instruction_discriminator: [102, 6, 61, 18, 1, 218, 235, 234],
   sell_instruction_discriminator: [51, 230, 133, 164, 1, 127, 131, 173],
   create_pool_instruction_discriminator: [233, 146, 209, 142, 207, 104, 64, 188],
