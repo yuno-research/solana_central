@@ -11,6 +11,7 @@ impl MeteoraDbc {
     pubkey: Pubkey,
     account_buffer: &[u8],
     dbc_pool_config: &DbcPoolConfig,
+    config_address: Pubkey,
   ) -> Self {
     let dbc_virtual_pool = DbcVirtualPool::try_from_slice(account_buffer).unwrap();
     Self {
@@ -22,10 +23,14 @@ impl MeteoraDbc {
         token_b_vault_address: dbc_virtual_pool.quote_vault,
         pool_type: Pools::MeteoraDbc,
       },
-      
-      config: pubkey,
+
+      config: config_address,
 
       sqrt_price: dbc_virtual_pool.sqrt_price,
+
+      // Reserve amounts from the virtual pool
+      base_reserve: dbc_virtual_pool.base_reserve,
+      quote_reserve: dbc_virtual_pool.quote_reserve,
 
       cliff_fee_numerator: dbc_pool_config.pool_fees.base_fee.cliff_fee_numerator,
       base_fee_number_of_periods: dbc_pool_config.pool_fees.base_fee.first_factor,

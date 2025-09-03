@@ -1,7 +1,9 @@
 use crate::central_context::central_context::CentralContext;
 use crate::constants::LAMPORTS_PER_SOL;
+use crate::protocol_idls::meteora::DbcVirtualPool;
 use crate::types::pool::{Pool, PoolTrait};
 use crate::types::pools::Pools;
+use borsh::BorshDeserialize;
 use primitive_types::U512;
 use solana_sdk::pubkey::Pubkey;
 use std::any::Any;
@@ -41,6 +43,14 @@ pub struct MeteoraDbc {
   done for the other protocols. Stored in the protocol as sqrt price
   */
   pub sqrt_price: u128,
+
+  /*
+  Reserve amounts stored directly in the pool
+  */
+  /// The actual amount of base token (token A) in the pool
+  pub base_reserve: u64,
+  /// The actual amount of quote token (token B) in the pool  
+  pub quote_reserve: u64,
 
   /*
   Fee Calculation Fields
@@ -175,12 +185,31 @@ impl PoolTrait for MeteoraDbc {
   }
 
   // TODO implement these 3
-  fn fetch_market_state_from_rpc(&mut self, central_context: &Arc<CentralContext>) {}
+  fn fetch_market_state_from_rpc(&mut self, central_context: &Arc<CentralContext>) {
+    // Fetch current pool state from RPC
+    let pool_account = central_context
+      .json_rpc_client
+      .get_account(&self.pool.pool_address)
+      .expect("Failed to fetch pool account");
+
+    // Deserialize the fresh pool data
+    let dbc_virtual_pool = DbcVirtualPool::try_from_slice(&pool_account.data)
+      .expect("Failed to deserialize DbcVirtualPool");
+
+    // Update all dynamic pool state fields with fresh on-chain data
+    self.sqrt_price = dbc_virtual_pool.sqrt_price;
+    self.base_reserve = dbc_virtual_pool.base_reserve;
+    self.quote_reserve = dbc_virtual_pool.quote_reserve;
+    self.volatility_accumulator = dbc_virtual_pool.volatility_tracker.volatility_accumulator;
+
+    // Note: activation_point is static config, so we don't update it
+    // Note: Fee config fields (cliff_fee_numerator, etc.) come from DbcPoolConfig, not DbcVirtualPool
+  }
 
   fn token_a_amount_units(&self) -> u64 {
-    0
+    self.base_reserve
   }
   fn token_b_amount_units(&self) -> u64 {
-    0
+    self.quote_reserve
   }
 }
