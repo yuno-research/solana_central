@@ -211,10 +211,12 @@ pub struct LaunchpadTradeEventIdl {
   pub amount_out: u64,
   pub protocol_fee: u64,
   pub platform_fee: u64,
+  pub creator_fee: u64,
   pub share_fee: u64,
   // 0 means buy, 1 means sell in this enum
   pub trade_direction: u8,
   pub pool_status: u8,
+  pub exact_in: bool,
 }
 
 

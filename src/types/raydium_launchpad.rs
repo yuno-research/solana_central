@@ -17,6 +17,11 @@ We use do token a is base and token b is quote here.
 pub struct RaydiumLaunchpad {
   pub info: Pool,
   pub platform_config: Pubkey,
+  /*
+  PDAs required for swap instructions after the creator fee update.
+  */
+  pub platform_vault: Pubkey,
+  pub creator_vault: Pubkey,
   // The initial reserves that the token pool was created with
   pub virtual_token_a_reserve: u64,
   pub virtual_token_b_reserve: u64,
