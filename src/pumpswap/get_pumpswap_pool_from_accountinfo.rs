@@ -2,7 +2,7 @@ use crate::constants::PUMP_CONSTANTS;
 use crate::protocol_idls::pumpswap::PumpAmmPoolAccount;
 use crate::types::pool::Pool;
 use crate::types::pools::Pools;
-use crate::types::pumpswap_pool::{PumpswapPool, PUMP_SWAP_FEE_VAULTS};
+use crate::types::pumpswap_pool::{PUMP_SWAP_FEE_VAULTS, PumpswapPool};
 use borsh::BorshDeserialize;
 use solana_sdk::pubkey::Pubkey;
 use spl_associated_token_account::get_associated_token_address;
@@ -37,7 +37,8 @@ impl PumpswapPool {
         token_a_vault_address: decoded_layout.pool_base_token_account,
         token_b_vault_address: decoded_layout.pool_quote_token_account,
       },
-
+      pool_creator: decoded_layout.creator,
+      coin_creator: decoded_layout.coin_creator,
       fee_vault: PUMP_SWAP_FEE_VAULTS[0],
       fee_vault_token_account,
       // These are fetched lazily later.
