@@ -39,6 +39,8 @@ pub struct PumpConstants {
   pub bonding_curve_event_discriminator: [u8; 16],
   pub pumpswap_swap_event_discriminator: [u8; 8],
   pub pumpswap_buy_swap_event_discriminator: [u8; 8],
+  pub bc_init_virtual_sol_reserves: u64,
+  pub bc_init_virtual_token_reserves: u64,
 }
 
 pub const PUMP_CONSTANTS: PumpConstants = PumpConstants {
@@ -67,6 +69,11 @@ pub const PUMP_CONSTANTS: PumpConstants = PumpConstants {
   ],
   pumpswap_swap_event_discriminator: [228, 69, 165, 46, 81, 203, 154, 29],
   pumpswap_buy_swap_event_discriminator: [103, 244, 82, 31, 44, 245, 119, 119],
+  /*
+  Initial virtual reserves and liquidity offsets used in bonding curve in raw token units
+  */
+  bc_init_virtual_sol_reserves: 30_000_000_000,
+  bc_init_virtual_token_reserves: 1_073_000_000_000_000,
 };
 
 // Constants for the Raydium program

@@ -12,8 +12,8 @@ impl PfBondingCurve {
     let decoded_layout: PfBondingCurveIdl =
       PfBondingCurveIdl::try_from_slice(account_buffer).unwrap();
     // Update the bonding curve state
-    self.sol_reserves = decoded_layout.virtual_sol_reserves;
-    self.token_reserves = decoded_layout.virtual_token_reserves;
+    self.virtual_sol_reserves = decoded_layout.virtual_sol_reserves;
+    self.virtual_token_reserves = decoded_layout.virtual_token_reserves;
     self.complete = decoded_layout.complete;
   }
 }

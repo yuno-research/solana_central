@@ -36,8 +36,8 @@ impl PfBondingCurve {
     let bonding_curve_address = derive_bonding_curve(&token_address);
 
     Self {
-      sol_reserves: decoded_layout.virtual_sol_reserves,
-      token_reserves: decoded_layout.virtual_token_reserves,
+      virtual_sol_reserves: decoded_layout.virtual_sol_reserves,
+      virtual_token_reserves: decoded_layout.virtual_token_reserves,
       complete: decoded_layout.complete,
       token_address,
       bonding_curve_address,

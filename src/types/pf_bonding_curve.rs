@@ -1,5 +1,6 @@
 use crate::central_context::central_context::CentralContext;
 use crate::constants::LAMPORTS_PER_SOL;
+use crate::constants::PUMP_CONSTANTS;
 use crate::constants::TOKENS;
 use crate::types::pool::PoolTrait;
 use crate::types::pools::Pools;
@@ -9,8 +10,8 @@ use std::sync::Arc;
 
 #[derive(Debug)]
 pub struct PfBondingCurve {
-  pub sol_reserves: u64,
-  pub token_reserves: u64,
+  pub virtual_sol_reserves: u64,
+  pub virtual_token_reserves: u64,
   pub complete: bool,
   pub token_address: Pubkey,
   pub bonding_curve_address: Pubkey,
@@ -53,11 +54,11 @@ impl PoolTrait for PfBondingCurve {
   }
 
   fn price_a_over_b_lp(&self) -> u128 {
-    self.token_reserves as u128 * LAMPORTS_PER_SOL / self.sol_reserves as u128
+    self.virtual_token_reserves as u128 * LAMPORTS_PER_SOL / self.virtual_sol_reserves as u128
   }
 
   fn price_b_over_a_lp(&self) -> u128 {
-    self.sol_reserves as u128 * LAMPORTS_PER_SOL / self.token_reserves as u128
+    self.virtual_sol_reserves as u128 * LAMPORTS_PER_SOL / self.virtual_token_reserves as u128
   }
 
   fn fetch_market_state_from_rpc(&mut self, central_context: &Arc<CentralContext>) {
@@ -69,12 +70,17 @@ impl PoolTrait for PfBondingCurve {
       .data;
     self.update_state_from_data(&data);
   }
-
+  /**
+  This will get real token reserves metric
+  */
   fn token_a_amount_units(&self) -> u64 {
-    self.token_reserves
+    self.virtual_token_reserves - PUMP_CONSTANTS.bc_init_virtual_token_reserves
   }
 
+  /**
+  This will get real sol reserves metric
+  */
   fn token_b_amount_units(&self) -> u64 {
-    self.sol_reserves
+    self.virtual_sol_reserves - PUMP_CONSTANTS.bc_init_virtual_sol_reserves
   }
 }
