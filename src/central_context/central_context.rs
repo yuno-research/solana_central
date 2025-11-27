@@ -31,13 +31,6 @@ pub struct CentralContext {
   context. Stored in lamports (10^9 = 1) for high precision.
   */
   pub raydium_cpmm_fee_rates_lp: HashMap<Pubkey, u64>,
-
-  /**
-  The fee rates specifically for the platform fees for the Raydium Launchpads. Each platform will
-  charge its own defined fee rate, which together with the protocol fee rate will make up the total
-  fee rate
-  */
-  pub raydium_launchpad_platform_fee_rates_lp: HashMap<Pubkey, u64>,
   /*
   The vault cache is wrapped in a mutex to prevent race conditions that can arise when 2 potential
   meteora liquidity pools can be created and both of those pools are not in the vault. Functions
@@ -115,7 +108,6 @@ impl CentralContext {
       json_rpc_client_async,
       raydium_cpmm_fee_rates_lp: HashMap::new(),
       raydium_launchpads: Mutex::new(HashMap::new()),
-      raydium_launchpad_platform_fee_rates_lp: HashMap::new(),
       meteora_vault_cache: Mutex::new(HashMap::new()),
       current_slot: RwLock::new(0),
       pools_map: RwLock::new(HashMap::new()),
