@@ -97,72 +97,75 @@ pub struct CpmmPoolConfigIdl {
 }
 
 /*
-Pulled from Raydium SDK V2. Confirmed by the IDL to be accurate minus some discriminator and buffer
-value differences.
-https://github.com/raydium-io/raydium-sdk-V2/blob/45d37d45460f4948d61762e8e4b149706778c217/src/raydium/cpmm/layout.ts
+Directly from the protocol source code:
+https://github.com/raydium-io/raydium-cp-swap/blob/master/programs/cp-swap/src/states/pool.rs
+Added in instruction discriminator for anchor accounts
 */
 #[derive(BorshDeserialize)]
 pub struct CpmmPoolInfoIdl {
-  /// Account discriminator / reserved blob
   pub discriminator: [u8; 8],
-  /// Config account this pool belongs to
-  pub config_id: Pubkey,
-  /// Address that created the pool
+  /// Which config the pool belongs
+  pub amm_config: Pubkey,
+  /// pool creator
   pub pool_creator: Pubkey,
-  /// Token A vault
-  pub vault_a: Pubkey,
-  /// Token B vault
-  pub vault_b: Pubkey,
-  /// LP token mint
-  pub mint_lp: Pubkey,
-  /// Mint for token A
-  pub mint_a: Pubkey,
-  /// Mint for token B
-  pub mint_b: Pubkey,
-  /// Program address handling mint A actions
-  pub mint_program_a: Pubkey,
-  /// Program address handling mint B actions
-  pub mint_program_b: Pubkey,
-  /// Oracle observation account
-  pub observation_id: Pubkey,
-  /// PDA bump for this pool
-  pub bump: u8,
-  /// Pool status bits
-  pub status: u8,
-  /// Decimals for LP token
-  pub lp_decimals: u8,
-  /// Decimals for token A
-  pub mint_decimal_a: u8,
-  /// Decimals for token B
-  pub mint_decimal_b: u8,
-  /// Total LP token supply
-  pub lp_amount: u64,
-  /// Protocol fees collected in token A
-  pub protocol_fees_mint_a: u64,
-  /// Protocol fees collected in token B
-  pub protocol_fees_mint_b: u64,
-  /// Fund fees collected in token A
-  pub fund_fees_mint_a: u64,
-  /// Fund fees collected in token B
-  pub fund_fees_mint_b: u64,
-  /// Pool open timestamp
-  pub open_time: u64,
-  /// Reserved for future use
-  pub extra: [u64; 32],
-}
+  /// Token A
+  pub token_0_vault: Pubkey,
+  /// Token B
+  pub token_1_vault: Pubkey,
 
-#[derive(BorshDeserialize)]
-pub struct LaunchpadPlatformConfigIdl {
-  pub discriminator: [u8; 8],
-  pub epoch: u64,
-  pub platform_fee_wallet: Pubkey,
-  pub platform_nft_wallet: Pubkey,
-  pub platform_scale: u64,
-  pub creator_scale: u64,
-  pub burn_scale: u64,
-  pub fee_rate: u64,
-  // We don't need this info not decoding it
-  garbage: [u8; 832],
+  /// Pool tokens are issued when A or B tokens are deposited.
+  /// Pool tokens can be withdrawn back to the original A or B token.
+  pub lp_mint: Pubkey,
+  /// Mint information for token A
+  pub token_0_mint: Pubkey,
+  /// Mint information for token B
+  pub token_1_mint: Pubkey,
+
+  /// token_0 program
+  pub token_0_program: Pubkey,
+  /// token_1 program
+  pub token_1_program: Pubkey,
+
+  /// observation account to store oracle data
+  pub observation_key: Pubkey,
+
+  pub auth_bump: u8,
+  /// Bitwise representation of the state of the pool
+  /// bit0, 1: disable deposit(value is 1), 0: normal
+  /// bit1, 1: disable withdraw(value is 2), 0: normal
+  /// bit2, 1: disable swap(value is 4), 0: normal
+  pub status: u8,
+
+  pub lp_mint_decimals: u8,
+  /// mint0 and mint1 decimals
+  pub mint_0_decimals: u8,
+  pub mint_1_decimals: u8,
+
+  /// True circulating supply without burns and lock ups
+  pub lp_supply: u64,
+  /// The amounts of token_0 and token_1 that are owed to the liquidity provider.
+  pub protocol_fees_token_0: u64,
+  pub protocol_fees_token_1: u64,
+
+  pub fund_fees_token_0: u64,
+  pub fund_fees_token_1: u64,
+
+  /// The timestamp allowed for swap in the pool.
+  pub open_time: u64,
+  /// recent epoch
+  pub recent_epoch: u64,
+
+  /// Creator fee collect mode
+  /// 0: both token_0 and token_1 can be used as trade fees. It depends on what the input token is when swapping
+  /// 1: only token_0 as trade fee
+  /// 2: only token_1 as trade fee
+  pub creator_fee_on: u8,
+  pub enable_creator_fee: bool,
+  pub padding1: [u8; 6],
+  pub creator_fees_token_0: u64,
+  pub creator_fees_token_1: u64,
+  /// padding for future updates
+  pub padding: [u64; 28],
 }
 
 #[derive(BorshDeserialize)]

@@ -15,16 +15,26 @@ pub struct PfBondingCurveIdl {
   padding: [u8; 69],
 }
 
+/**
+Current event IDL used in pumpfun bonding curve event, will always be 266 bytes, example tx:
+Post creator fee addition event: 35Vbdm6aMboKYBJcrqKVLoaxnJgRJGe9iJ4nNovWacMeVxDRqeSkSfFDjVy16ywT6jX6CiGRQawKFKE3q8UFzAdo
+Post length: 266
+*/
 #[derive(BorshDeserialize)]
-pub struct PfTradeEventIdl {
+pub struct PfTradeEventIdlCurrent {
   // 16 byte discriminator
   pub padding: [u8; 16],
   pub mint: Pubkey,
+  /*
+  Sol amount is how much SOL was actually sent to the protocol/bonding curve and this quantity
+  EXCLUDES fees which the user additionally sends. So this is NOT the total amount of sol involved in the swap
+  */
   pub sol_amount: u64,
   pub token_amount: u64,
   pub is_buy: bool,
   pub user: Pubkey,
   pub timestamp: i64,
+  // These values are all after the swap takes place
   pub virtual_sol_reserves: u64,
   pub virtual_token_reserves: u64,
   pub real_sol_reserves: u64,
@@ -41,3 +51,22 @@ pub struct PfTradeEventIdl {
   pub current_sol_volume: u64,
   pub last_update_timestamp: u64,
 }
+
+/**
+Old event
+Pre creator fee addition event: 4szssqMqm7tSkdQnBRDt8MijHu32GbLDnJxYijfinoo3sJnFAFya8oSE3sihmU3NA5U7DToDU5uE9jjmQCVn1yGs
+Pre length: 137
+*/
+#[derive(BorshDeserialize)]
+pub struct PfTradeEventIdlOld {
+  pub discriminator: [u8; 16],
+  pub mint: Pubkey,
+  pub sol_amount: u64,
+  pub token_amount: u64,
+  pub is_buy: bool,
+  pub user: Pubkey,
+  pub timestamp: i64,
+  pub virtual_sol_reserves: u64,
+  pub virtual_token_reserves: u64,
+}
+

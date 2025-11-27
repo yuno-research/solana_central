@@ -31,6 +31,10 @@ pub struct PumpAmmCreatePoolInstructionDataIdl {
   pub coin_creator: Pubkey,
 }
 
+/**
+ * OLD Pumpswap BUY Event (401 bytes)
+ * Used before min_base_amount_out and ix_name were added
+ */
 #[derive(BorshDeserialize)]
 pub struct PumpswapBuyEventIdl {
   pub discriminator: [u8; 16],
@@ -64,7 +68,10 @@ pub struct PumpswapBuyEventIdl {
   pub last_update_timestamp: u64,
 }
 
-
+/**
+ * Pumpswap SELL Event (360 bytes)
+ * This event structure has NOT changed - no old/new versions
+ */
 #[derive(BorshDeserialize)]
 pub struct PumpswapSellEventIdl {
   pub discriminator: [u8; 16],
@@ -92,4 +99,3 @@ pub struct PumpswapSellEventIdl {
   pub coin_creator_fee_basis_points: u64,
   pub coin_creator_fee: u64,
 }
-

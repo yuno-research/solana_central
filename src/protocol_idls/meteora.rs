@@ -135,7 +135,7 @@ Pulled directly of of Meteora DammV2 program src. All supporting types included 
 pub struct MeteoraDammv2PoolIdl {
   pub discriminator: [u8; 8],
   /// Pool fee
-  pub pool_fees: PoolFees,
+  pub pool_fees: PoolFeesStruct,
   /// token a mint
   pub token_a_mint: Pubkey,
   /// token b mint
@@ -180,52 +180,30 @@ pub struct MeteoraDammv2PoolIdl {
   pub collect_fee_mode: u8,
   /// pool type
   pub pool_type: u8,
+  /// pool version, 0: max_fee is still capped at 50%, 1: max_fee is capped at 99%
+  pub version: u8,
   /// padding
-  pub _padding_0: [u8; 2],
+  pub _padding_0: u8,
   /// cumulative
   pub fee_a_per_liquidity: [u8; 32], // U256
   /// cumulative
   pub fee_b_per_liquidity: [u8; 32], // U256
+  // TODO: Is this large enough?
   pub permanent_lock_liquidity: u128,
   /// metrics
   pub metrics: PoolMetrics,
+  /// pool creator
+  pub creator: Pubkey,
   /// Padding for further use
-  _padding_1: [u64; 10],
+  pub _padding_1: [u64; 6],
   /// Farming reward information
   pub reward_infos: [RewardInfo; NUM_REWARDS],
 }
 
 const NUM_REWARDS: usize = 2;
-#[derive(BorshDeserialize, Debug)]
-pub struct BaseFeeStruct {
-  pub cliff_fee_numerator: u64,
-  pub fee_scheduler_mode: u8,
-  pub padding_0: [u8; 5],
-  pub number_of_period: u16,
-  pub period_frequency: u64,
-  pub reduction_factor: u64,
-  pub padding_1: u64,
-}
 
 #[derive(BorshDeserialize, Debug)]
-pub struct DynamicFees {
-  pub initialized: u8, // 0, ignore for dynamic fee
-  padding: [u8; 7],
-  pub max_volatility_accumulator: u32,
-  pub variable_fee_control: u32,
-  pub bin_step: u16,
-  pub filter_period: u16,
-  pub decay_period: u16,
-  pub reduction_factor: u16,
-  pub last_update_timestamp: u64,
-  pub bin_step_u128: u128,
-  pub sqrt_price_reference: u128, // reference sqrt price
-  pub volatility_accumulator: u128,
-  pub volatility_reference: u128, // decayed volatility accumulator
-}
-
-#[derive(BorshDeserialize, Debug)]
-pub struct PoolFees {
+pub struct PoolFeesStruct {
   /// Trade fees are extra token amounts that are held inside the token
   /// accounts during a trade, making the value of liquidity tokens rise.
   /// Trade fee numerator
@@ -244,49 +222,83 @@ pub struct PoolFees {
   pub padding_0: [u8; 5],
 
   /// dynamic fee
-  pub dynamic_fee: DynamicFees,
+  pub dynamic_fee: DynamicFeeStruct,
 
   /// padding
-  padding_1: [u64; 2],
+  pub padding_1: [u64; 2],
 }
 
 #[derive(BorshDeserialize, Debug)]
 pub struct PoolMetrics {
-  pub total_protocol_base_fee: u64,
-  pub total_protocol_quote_fee: u64,
-  pub total_trading_base_fee: u64,
-  pub total_trading_quote_fee: u64,
+  pub total_lp_a_fee: u128,
+  pub total_lp_b_fee: u128,
+  pub total_protocol_a_fee: u64,
+  pub total_protocol_b_fee: u64,
+  pub total_partner_a_fee: u64,
+  pub total_partner_b_fee: u64,
+  pub total_position: u64,
+  pub padding: u64,
 }
 
 #[derive(BorshDeserialize, Debug)]
-struct RewardInfo {
+pub struct RewardInfo {
   /// Indicates if the reward has been initialized
-  initialized: u8,
+  pub initialized: u8,
   /// reward token flag
-  reward_token_flag: u8,
+  pub reward_token_flag: u8,
   /// padding
-  _padding_0: [u8; 6],
+  pub _padding_0: [u8; 6],
   /// Padding to ensure `reward_rate: u128` is 16-byte aligned
-  _padding_1: [u8; 8], // 8 bytes
+  pub _padding_1: [u8; 8], // 8 bytes
   /// Reward token mint.
-  mint: Pubkey,
+  pub mint: Pubkey,
   /// Reward vault token account.
-  vault: Pubkey,
+  pub vault: Pubkey,
   /// Authority account that allows to fund rewards
-  funder: Pubkey,
+  pub funder: Pubkey,
   /// reward duration
-  reward_duration: u64,
+  pub reward_duration: u64,
   /// reward duration end
-  reward_duration_end: u64,
+  pub reward_duration_end: u64,
   /// reward rate
-  reward_rate: u128,
+  pub reward_rate: u128,
   /// Reward per token stored
-  reward_per_token_stored: [u8; 32], // U256
+  pub reward_per_token_stored: [u8; 32], // U256
   /// The last time reward states were updated.
-  last_update_time: u64,
+  pub last_update_time: u64,
   /// Accumulated seconds when the farm distributed rewards but the bin was empty.
   /// These rewards will be carried over to the next reward time window.
-  cumulative_seconds_with_empty_liquidity_reward: u64,
+  pub cumulative_seconds_with_empty_liquidity_reward: u64,
+}
+
+#[derive(BorshDeserialize, Debug)]
+pub struct BaseFeeStruct {
+  pub cliff_fee_numerator: u64,
+  // In fee scheduler first_factor: number_of_period, second_factor: period_frequency, third_factor: reduction_factor
+  // in rate limiter: first_factor: fee_increment_bps, second_factor: max_limiter_duration, max_fee_bps, third_factor: reference_amount
+  pub base_fee_mode: u8,
+  pub padding_0: [u8; 5],
+  pub first_factor: u16,
+  pub second_factor: [u8; 8],
+  pub third_factor: u64,
+  pub padding_1: u64,
+}
+
+#[derive(BorshDeserialize, Debug)]
+pub struct DynamicFeeStruct {
+  pub initialized: u8, // 0, ignore for dynamic fee
+  pub padding: [u8; 7],
+  pub max_volatility_accumulator: u32,
+  pub variable_fee_control: u32,
+  pub bin_step: u16,
+  pub filter_period: u16,
+  pub decay_period: u16,
+  pub reduction_factor: u16,
+  pub last_update_timestamp: u64,
+  pub bin_step_u128: u128,
+  pub sqrt_price_reference: u128, // reference sqrt price
+  pub volatility_accumulator: u128,
+  pub volatility_reference: u128, // decayed volatility accumulator
 }
 
 /*
