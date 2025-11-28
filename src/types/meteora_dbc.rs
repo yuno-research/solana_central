@@ -1,4 +1,4 @@
-use crate::central_context::central_context::CentralContext;
+use crate::CentralContext;
 use crate::constants::LAMPORTS_PER_SOL;
 use crate::protocol_idls::meteora::DbcVirtualPool;
 use crate::types::pool::{Pool, PoolTrait};
@@ -35,6 +35,7 @@ pub enum ActivationType {
 
 // Like in all other protocols token A is base and token B is quote.
 // TODO use our own sol token account in the referral fee if we are trading with sol
+/// Struct to hold data and PoolTrait implementation for Meteora Dynamic Bonding Curve pools.
 pub struct MeteoraDbc {
   pub pool: Pool,
   pub config: Pubkey,

@@ -1,4 +1,4 @@
-use crate::central_context::central_context::CentralContext;
+use crate::CentralContext;
 use crate::constants::LAMPORTS_PER_SOL;
 use crate::types::meteora_vault::MeteoraVault;
 use crate::types::swap_direction::SwapDirection;
@@ -9,15 +9,12 @@ use solana_sdk::pubkey::Pubkey;
 use std::any::Any;
 use std::sync::{Arc, RwLock};
 
-/*
+/**
+Struct to hold data and PoolTrait implementation for Meteora Ammv1 pools.
 This struct contains the data that is UNIQUE to a specific AMM Pool on Meteora. For shared data,
 such as vaults for tokens, because they are shared across all AMM pools in the Meteora protocol,
 they will be stored in shared MeteoraVault objects. References to those shared objects will be
 stored in these pool info objects.
-
-The lifetime indicator of 'a denotes that throughout the lifetime of a MeteoraAmmPool struct, there
-will always be vaults for both tokens corresponding to it. Ultimately, all vaults can be found in
-the vaults cache object stored in Meteora_vault.
 */
 pub struct MeteoraAmmPool {
   pub info: Pool,

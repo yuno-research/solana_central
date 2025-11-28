@@ -13,6 +13,7 @@ impl PfBondingCurve {
   from the token address using derive_bonding_curve.
   
   USAGE:
+  ```rust
   let token_address = Pubkey::from_str_const("ERHiB4WJQX1WQXc88hXXcie3uCStYH5Uzz3MPJW4rwKe");
   let bonding_curve_address = derive_bonding_curve(&token_address);
   let pf_bonding_curve = PfBondingCurve::from_account_info(
@@ -24,6 +25,7 @@ impl PfBondingCurve {
       .data,
   );
   println!("{:?}", pf_bonding_curve);
+  ```
   */
   pub fn from_account_info(token_address: Pubkey, account_buffer: &[u8]) -> Self {
     let decoded_layout = PfBondingCurveIdl::try_from_slice(account_buffer)

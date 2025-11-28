@@ -1,4 +1,4 @@
-use crate::central_context::central_context::CentralContext;
+use crate::CentralContext;
 use crate::constants::LAMPORTS_PER_SOL;
 use crate::types::pool::Pool;
 use crate::types::pool::PoolTrait;
@@ -8,15 +8,11 @@ use solana_sdk::pubkey::Pubkey;
 use std::any::Any;
 use std::sync::Arc;
 
-/*
-The only things you actually need to trade on a Raydium AmmV4 at least are these things:
-
-id: The liquidity pool program address,
-
-baseVault + quoteVault
-
-The rest of the fields can be constant blasted as random values and the program will not care
-because Serum and Openbook are no longer in use for these AMMs.
+/**
+Struct to hold data and PoolTrait implementation for Raydium AmmV4 pools. The only things you
+actually need to trade on a Raydium AmmV4 at least are these things: the liquidity pool program
+address, baseVault, quoteVault. The rest of the fields can be constant blasted as random values and
+the program will not care because Serum and Openbook are no longer in use for these AMMs.
 */
 #[derive(Debug)]
 pub struct RaydiumAmmV4Pool {

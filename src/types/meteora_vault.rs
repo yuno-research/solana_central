@@ -1,6 +1,8 @@
 use borsh::BorshDeserialize;
 use solana_sdk::pubkey::Pubkey;
 
+/// Struct to hold data for Meteora vaults, which are used in Meteora AMMv1 and potentially Meteora
+/// DLMM pools.
 pub struct MeteoraVault {
   // shows up as aVault/ A Vault
   pub vault: Pubkey,

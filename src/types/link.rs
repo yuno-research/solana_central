@@ -1,13 +1,11 @@
 use solana_sdk::pubkey::Pubkey;
 
 /**
-Check if there exists a "link" between two accounts. For there to be a link, both accounts must be on curve.
-We return link as a 64 byte array with first 32 bytes being "smaller" account and last 32 bytes being "larger" account.
-
-Accounts are compared from most to least significant bit.
-
-In addition to storing the 2 wallets, we also store the earliest tx where they were first observed
-linking, and we order by block_time, slot, index, and atomic_instruction_index.
+Struct used to track a "link" between two accounts. For there to be a link, both accounts must be
+on curve. We return link as a 64 byte array with first 32 bytes being "smaller" account and last 32
+bytes being "larger" account. Accounts are compared from most to least significant bit. In addition
+to storing the 2 wallets, we also store the earliest tx where they were first observed linking, and
+we order by block_time, slot, index, and atomic_instruction_index.
 */
 
 #[derive(Clone)]
@@ -20,6 +18,8 @@ pub struct Link {
 }
 
 impl Link {
+  /// Constructor to check if there exists a "link" between two accounts. For there to be a link,
+  /// both accounts must be on curve. Returns an option where if its not none, the link is valid.
   pub fn check_link(
     account1: &Pubkey,
     account2: &Pubkey,
@@ -53,7 +53,7 @@ impl Link {
     })
   }
 
-  // Debug tostring for link
+  /// Debug tostring for link
   pub fn to_string(&self) -> String {
     let wallet_1 = Pubkey::new_from_array(self.link[0..32].try_into().expect("slice with incorrect length"));
     let wallet_2 = Pubkey::new_from_array(self.link[32..64].try_into().expect("slice with incorrect length"));

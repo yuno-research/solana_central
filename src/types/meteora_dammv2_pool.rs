@@ -1,4 +1,4 @@
-use crate::central_context::central_context::CentralContext;
+use crate::CentralContext;
 use crate::constants::LAMPORTS_PER_SOL;
 use crate::protocol_idls::meteora::MeteoraDammv2PoolIdl;
 use crate::types::pool::Pool;
@@ -12,6 +12,7 @@ use std::cmp;
 use std::sync::Arc;
 
 #[derive(Debug)]
+/// Struct to hold data and PoolTrait implementation for Meteora Ammv2/Dammv2 pools.
 pub struct MeteoraDammV2Pool {
   pub info: Pool,
 

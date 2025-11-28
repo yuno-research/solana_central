@@ -8,6 +8,11 @@ const FIVE: Pubkey = Pubkey::from_str_const("2fGXL8uhqxJ4tpgtosHZXT4zcQap6j62z3b
 const SIX: Pubkey = Pubkey::from_str_const("G95xxie3XbkCqtE39GgQ9Ggc7xBC8Uceve7HFDEFApkc");
 const SEVEN: Pubkey = Pubkey::from_str_const("C7Cx2pMLtjybS3mDKSfsBj4zQ3PRZGkKt7RCYTTbCSx2");
 
+/// Get the fee amount for a Raydium CPMM pool based on its config account
+///
+/// Returns the fee rate in lamports based on known config account addresses.
+/// If the config account is not recognized, returns a default high fee rate (100%)
+/// and logs a warning.
 pub fn get_cpmm_fee_amount_from_config_account(config_account: Pubkey, pool_account: &Pubkey) -> u64 {
   if config_account == ONE {
     return 15000000;

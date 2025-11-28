@@ -6,6 +6,10 @@ use borsh::BorshDeserialize;
 use solana_sdk::pubkey::Pubkey;
 
 impl MeteoraDammV2Pool {
+  /// Create a Meteora DAMMv2 pool from on-chain account data
+  ///
+  /// Parses the account buffer using the Meteora DAMMv2 pool IDL structure.
+  /// DAMMv2 pools support dynamic fees based on volatility and time-based schedules.
   pub fn from_account_info(pubkey: Pubkey, account_buffer: &[u8]) -> Self {
     let decoded_layout: MeteoraDammv2PoolIdl =
       MeteoraDammv2PoolIdl::try_from_slice(account_buffer).unwrap();

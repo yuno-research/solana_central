@@ -14,7 +14,6 @@ pub const TOKENS: Tokens = Tokens {
   usdt: Pubkey::from_str_const("Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"),
 };
 
-// Constants for the Pumpfun program
 pub struct PumpConstants {
   pub bonding_curve_global_config: Pubkey,
   pub bonding_curve_program: Pubkey,
@@ -54,14 +53,20 @@ pub const PUMP_CONSTANTS: PumpConstants = PumpConstants {
   bonding_curve_event_authority: Pubkey::from_str_const(
     "Ce6TQqeHC9p8KetsN6JsjHK7UTZk7nasjjnr7XxXp9F1",
   ),
-  bonding_curve_update_authority: Pubkey::from_str_const("TSLvdd1pWpHVjahSpsvCXUbgwsL3JAcvokwaKt1eokM"),
+  bonding_curve_update_authority: Pubkey::from_str_const(
+    "TSLvdd1pWpHVjahSpsvCXUbgwsL3JAcvokwaKt1eokM",
+  ),
   bonding_curve_fee_config: Pubkey::from_str_const("8Wf5TiAheLUqBrKXeYg2JtAFFMWtKdG2BSFgqUcPVwTt"),
   pump_swap_migrator_wallet: Pubkey::from_str_const("39azUYFWPz3VHgKCf3VChUwbpURdCHRxjWVowf5jUJjg"),
   pump_swap_program: Pubkey::from_str_const("pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"),
   pump_swap_global_config: Pubkey::from_str_const("ADyA8hdefvWN2dbGGWFotbzWxrAvLW83WG6QCVXvJKqw"),
   pump_swap_event_authority: Pubkey::from_str_const("GS4CU59F31iL7aR2Q8zVS8DRrcRnXX1yjQ66TqNVQnaR"),
-  bonding_curve_global_volume_accumulator: Pubkey::from_str_const("Hq2wp8uJ9jCPsYgNHex8RtqdvMPfVGoYwjvF1ATiwn2Y"),
-  pumpswap_global_volume_accumulator: Pubkey::from_str_const("C2aFPdENg4A2HQsmrd5rTw5TaYBX5Ku887cWjbFKtZpw"),
+  bonding_curve_global_volume_accumulator: Pubkey::from_str_const(
+    "Hq2wp8uJ9jCPsYgNHex8RtqdvMPfVGoYwjvF1ATiwn2Y",
+  ),
+  pumpswap_global_volume_accumulator: Pubkey::from_str_const(
+    "C2aFPdENg4A2HQsmrd5rTw5TaYBX5Ku887cWjbFKtZpw",
+  ),
   fee_program: Pubkey::from_str_const("pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ"),
   pumpswap_fee_config: Pubkey::from_str_const("5PHirr8joyTMp9JMm6nW7hNDVyEYdkzDqazxPD7RaTjx"),
   buy_instruction_discriminator: [102, 6, 61, 18, 1, 218, 235, 234],
@@ -82,7 +87,17 @@ pub const PUMP_CONSTANTS: PumpConstants = PumpConstants {
   bc_init_virtual_token_reserve_diff: 279_900_000_000_000,
 };
 
-// Constants for the Raydium program
+pub const PUMP_SWAP_FEE_VAULTS: [Pubkey; 8] = [
+  Pubkey::from_str_const("62qc2CNXwrYqQScmEdiZFFAnJR262PxWEuNQtxfafNgV"),
+  Pubkey::from_str_const("7VtfL8fvgNfhz17qKRMjzQEXgbdpnHHHQRh54R9jP2RJ"),
+  Pubkey::from_str_const("7hTckgnGnLQR6sdH7YkqFTAA7VwTfYFaZ6EhEsU3saCX"),
+  Pubkey::from_str_const("9rPYyANsfQZw3DnDmKE3YCQF5E8oD89UXoHn9JFEhJUz"),
+  Pubkey::from_str_const("AVmoTthdrX6tKt4nDjco2D775W2YK3sDhxPcMmzUAmTY"),
+  Pubkey::from_str_const("FWsW1xNtWscwNmKv6wVsU1iTzRN6wmmk3MjxRP5tT7hz"),
+  Pubkey::from_str_const("G5UZAVbAf46s7cKWoyKu8kYTip9DGTpbLZ2qa9Aq69dP"),
+  Pubkey::from_str_const("JCRGumoE9Qi5BBgULTgdgTLjSgkCMSbF62ZZfGs84JeU"),
+];
+
 pub struct RaydiumConstants {
   pub amm_authority: Pubkey,
   pub market_program_id: Pubkey,
@@ -138,7 +153,6 @@ pub const RAYDIUM_CONSTANTS: RaydiumConstants = RaydiumConstants {
   ],
 };
 
-/// Constants for the Meteora program
 pub struct MeteoraConstants {
   pub amm_program: Pubkey,
   pub vault_program: Pubkey,
@@ -153,7 +167,6 @@ pub struct MeteoraConstants {
   pub dbc_pool_authority: Pubkey,
   pub dbc_event_authority: Pubkey,
   pub dbc_swap_discriminator: [u8; 8],
-
 }
 
 pub const METEORA_CONSTANTS: MeteoraConstants = MeteoraConstants {
@@ -169,12 +182,8 @@ pub const METEORA_CONSTANTS: MeteoraConstants = MeteoraConstants {
   dbc_program: Pubkey::from_str_const("dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN"),
   dbc_pool_authority: Pubkey::from_str_const("FhVo3mqL8PW5pH5U2CN4XE33DokiyZnUwuGpH2hmHLuM"),
   dbc_event_authority: Pubkey::from_str_const("8Ks12pbrD6PXxfty1hVQiE9sc289zgU1zHkvXhrSdriF"),
-  dbc_swap_discriminator: [248, 198, 158, 145, 225, 117, 135, 200]
+  dbc_swap_discriminator: [248, 198, 158, 145, 225, 117, 135, 200],
 };
-pub enum TokenProgramsEnum {
-  TokenStandard,
-  Token2022,
-}
 
 pub struct SolanaPrograms {
   pub token_program: Pubkey,
@@ -194,6 +203,7 @@ pub const SOLANA_PROGRAMS: SolanaPrograms = SolanaPrograms {
   metaplex_program: Pubkey::from_str_const("metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"),
 };
 
+/// The size of the raw, onchain account data for each pool type in bytes
 pub struct PoolsAccountSizes {
   pub pump_swap: usize,
   pub meteora_amm: usize,

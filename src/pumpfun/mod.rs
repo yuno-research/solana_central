@@ -1,3 +1,7 @@
+//! Pumpfun protocol utilities
+//!
+//! This module provides functions for working with Pumpfun bonding curves,
+//! including PDA derivation and state updates.
+
 pub mod derive_bonding_curve;
-pub mod update_state_from_data;
 mod from_account_info;

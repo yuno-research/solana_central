@@ -1,4 +1,4 @@
-use crate::central_context::central_context::CentralContext;
+use crate::CentralContext;
 use crate::constants::LAMPORTS_PER_SOL;
 use crate::protocol_idls::raydium::LaunchpadPoolIdl;
 use crate::types::pool::Pool;
@@ -11,9 +11,9 @@ use std::any::Any;
 use std::sync::Arc;
 
 /**
-As of right now the only global config account for Raydium Launchlab uses the constant product pool.
-We use do token a is base and token b is quote here.
-
+Struct to hold data and PoolTrait implementation for Raydium AmmV4 pools. As of July 2025, the only
+global config account for Raydium Launchlab uses the constant product pool. We use do token a is
+base and token b is quote here.
 */
 pub struct RaydiumLaunchpad {
   pub info: Pool,

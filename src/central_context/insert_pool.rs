@@ -5,11 +5,11 @@ use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
 
 impl CentralContext {
-  /**
-  Used to add a newly picked up and processed pool into the centrla context so that it can be queried
-  from various places like the main markets graph, and also by the token account address to pool
-  hashmap
-  */
+  /// Insert a pool into the central context
+  ///
+  /// Adds the pool to both the bidirectional market graph and the pools map.
+  /// Pools can then be queried by token pairs or by account addresses (pool address or vault addresses).
+  /// Invalid pools (with system program addresses or duplicate tokens) are silently ignored.
   pub fn insert_pool(&self, pool: Arc<RwLock<dyn PoolTrait>>) {
     let result_unlocked = pool.read().unwrap();
     let token_a_address: &solana_sdk::pubkey::Pubkey = result_unlocked.token_a_address();
@@ -38,8 +38,6 @@ impl CentralContext {
 
     // Get references to both market maps
     let markets_a = markets.get_mut(token_a_address).unwrap();
-    
-    
 
     // Check if market pair already exists
     if let Some(existing_markets) = markets_a.get(token_b_address) {

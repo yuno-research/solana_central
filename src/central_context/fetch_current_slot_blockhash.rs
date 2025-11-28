@@ -1,10 +1,10 @@
 use crate::central_context::central_context::CentralContext;
 
-/**
-Use json rpc api to refresh current slot and latest blockhash. Not used in production as gRPC will
-be updating these variables in central context
-*/
 impl CentralContext {
+  /// Refresh current slot and latest blockhash from JSON RPC
+  ///
+  /// Updates the `current_slot` and `latest_blockhash` fields in the context.
+  /// Note: In production, these values are typically updated via gRPC streams rather than polling.
   pub fn fetch_current_slot_blockhash(&self) {
     let mut current_slot = self.current_slot.write().unwrap();
     *current_slot = self.json_rpc_client.get_slot().unwrap();

@@ -1,9 +1,14 @@
-use crate::central_context::central_context::CentralContext;
+use crate::CentralContext;
 use crate::constants::METEORA_CONSTANTS;
 use crate::types::meteora_vault::MeteoraVault;
 use solana_sdk::pubkey::Pubkey;
 use std::sync::{Arc, RwLock};
 
+/// Get or create a Meteora vault for a given token address
+///
+/// Checks the cache first, and if not found, derives the vault PDA and creates
+/// a new vault instance. Ensures only one vault instance exists per token by
+/// using the cache's mutex protection.
 pub fn get_meteora_vault_from_token_address(
   token_address: &Pubkey,
   central_context: Arc<CentralContext>,

@@ -5,6 +5,11 @@ use solana_sdk::signature::Signature;
 use std::collections::HashSet;
 
 #[derive(Clone, Debug)]
+/**
+Standardized swap transaction type that is used to store all swap transactions on the blockchain
+regardless of the protocol. This schema is used in `solana_car` historical ingestion and by
+strategies and data analytics tools working in polars queries that we made.
+*/
 pub struct SwapTx {
   pub pool: Pools,
   pub direction: SwapDirection,

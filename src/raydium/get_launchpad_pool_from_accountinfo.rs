@@ -7,6 +7,9 @@ use borsh::BorshDeserialize;
 use solana_sdk::pubkey::Pubkey;
 
 impl RaydiumLaunchpad {
+  /// Create a Raydium launchpad pool from on-chain account data
+  ///
+  /// Parses the launchpad pool account and derives platform and creator vault PDAs.
   pub fn from_account_info(pubkey: Pubkey, account_buffer: &[u8]) -> Self {
     let decoded_layout = LaunchpadPoolIdl::try_from_slice(account_buffer).unwrap();
     let platform_config = decoded_layout.platform_config;

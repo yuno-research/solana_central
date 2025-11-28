@@ -1,4 +1,4 @@
-use crate::central_context::central_context::CentralContext;
+use crate::CentralContext;
 use crate::utilities::process_get_program_accounts_pool::process_get_program_accounts_pool;
 use futures::future::join_all;
 use solana_account_decoder::UiAccountEncoding;
@@ -9,6 +9,9 @@ use solana_sdk::pubkey::Pubkey;
 use std::sync::Arc;
 use std::thread;
 
+/// Load pools from multiple protocols using async getProgramAccounts JSON RPC calls. Fetches and
+/// processes pool accounts for the specified protocols in parallel using multiple threads. 
+/// Processed pools are inserted into the central context for later access.
 pub async fn load_pools(
   protocols_to_load: &[(Pubkey, usize)],
   central_context: Arc<CentralContext>,

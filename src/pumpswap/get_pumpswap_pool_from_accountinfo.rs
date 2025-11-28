@@ -1,16 +1,21 @@
 use crate::constants::PUMP_CONSTANTS;
+use crate::constants::PUMP_SWAP_FEE_VAULTS;
 use crate::protocol_idls::pumpswap::PumpAmmPoolAccount;
 use crate::types::pool::Pool;
 use crate::types::pools::Pools;
-use crate::types::pumpswap_pool::{PUMP_SWAP_FEE_VAULTS, PumpswapPool};
+use crate::types::pumpswap_pool::PumpswapPool;
 use borsh::BorshDeserialize;
 use solana_sdk::pubkey::Pubkey;
 use spl_associated_token_account::get_associated_token_address;
 
 impl PumpswapPool {
+  /// Create a Pumpswap pool from on-chain account data
+  ///
+  /// Parses the account buffer and derives associated fee vault and creator vault addresses.
   pub fn from_account_info(pubkey: Pubkey, account_buffer: &[u8]) -> Self {
-    let decoded_layout: PumpAmmPoolAccount = PumpAmmPoolAccount::try_from_slice(&account_buffer[0..300])
-      .expect("Failed to deserialize PumpSwap pool account");
+    let decoded_layout: PumpAmmPoolAccount =
+      PumpAmmPoolAccount::try_from_slice(&account_buffer[0..300])
+        .expect("Failed to deserialize PumpSwap pool account");
 
     // Randomly pick one of the known fee vaults – same logic as the TS code.
 

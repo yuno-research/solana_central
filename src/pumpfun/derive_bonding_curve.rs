@@ -1,6 +1,9 @@
 use crate::constants::PUMP_CONSTANTS;
 use solana_sdk::pubkey::Pubkey;
 
+/// Derive the Pumpfun bonding curve PDA for a given token address
+///
+/// Uses the seeds `["bonding-curve", token_address]` to derive the program-derived address.
 pub fn derive_bonding_curve(token_address: &Pubkey) -> Pubkey {
   let (pda, _) = Pubkey::find_program_address(
     &[b"bonding-curve", token_address.as_ref()],

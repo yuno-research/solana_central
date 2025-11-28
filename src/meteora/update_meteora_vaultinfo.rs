@@ -1,4 +1,4 @@
-use crate::central_context::central_context::CentralContext;
+use crate::CentralContext;
 use crate::types::meteora_vault::MeteoraVault;
 use borsh::BorshDeserialize;
 use solana_sdk::account::ReadableAccount;
@@ -6,6 +6,11 @@ use std::sync::Arc;
 use crate::protocol_idls::meteora::{VaultIdlBig, VaultIdlSmall};
 
 impl MeteoraVault {
+  /// Update vault information from on-chain account data
+  ///
+  /// Fetches the vault account and updates all vault state including locked profit
+  /// tracker, total amount, and LP token supply. Supports both big (10240 bytes)
+  /// and small (1232 bytes) vault account formats.
   pub fn update_vault_info(&mut self, central_context: Arc<CentralContext>) {
     let vault_address = self.vault;
     let binding = central_context

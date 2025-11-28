@@ -6,6 +6,9 @@ use borsh::BorshDeserialize;
 use solana_sdk::pubkey::Pubkey;
 
 impl RaydiumAmmV4Pool {
+  /// Create a Raydium AMMv4 pool from on-chain account data
+  ///
+  /// Parses the account buffer using the Raydium AMMv4 pool IDL structure.
   pub fn from_account_info(pubkey: Pubkey, account_buffer: &[u8]) -> Self {
     let decoded_layout: AmmV4PoolInfoIdl =
       AmmV4PoolInfoIdl::try_from_slice(account_buffer).unwrap();

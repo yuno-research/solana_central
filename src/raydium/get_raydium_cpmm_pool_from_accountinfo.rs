@@ -7,6 +7,9 @@ use borsh::BorshDeserialize;
 use solana_sdk::pubkey::Pubkey;
 
 impl RaydiumCpmmPool {
+  /// Create a Raydium CPMM pool from on-chain account data
+  ///
+  /// Parses the account buffer and looks up the fee rate from the config account.
   pub fn from_account_info(pubkey: Pubkey, account_buffer: &[u8]) -> Self {
     let decoded_layout: CpmmPoolInfoIdl = CpmmPoolInfoIdl::try_from_slice(account_buffer).unwrap();
     let fee_fraction_lp = get_cpmm_fee_amount_from_config_account(decoded_layout.amm_config, &pubkey);

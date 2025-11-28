@@ -1,4 +1,4 @@
-use crate::central_context::central_context::CentralContext;
+use crate::CentralContext;
 use crate::constants::LAMPORTS_PER_SOL;
 use crate::protocol_idls::raydium::CpmmPoolInfoIdl;
 use crate::types::pool::Pool;
@@ -11,6 +11,7 @@ use std::any::Any;
 use std::sync::Arc;
 
 #[derive(Debug)]
+/// Struct to hold data and PoolTrait implementation for Raydium Cpmm pools.
 pub struct RaydiumCpmmPool {
   pub info: Pool,
   pub pool_config_account: Pubkey,
@@ -23,7 +24,7 @@ pub struct RaydiumCpmmPool {
   /*
   These are accumulated fees which are stored in the vault token accounts but are not apart of the
   liquidity of the pool. When the constant product logic is applied, they are subtracted by the
-  protocol and you can see thsi in the vault_amount_without_fee function in the program source code
+  protocol and you can see this in the vault_amount_without_fee function in the program source code
   here: https://github.com/raydium-io/raydium-cp-swap/blob/master/programs/cp-swap/src/states/pool.rs
 
   We subtract these fields as well to get our actual amount reserves for the pool.

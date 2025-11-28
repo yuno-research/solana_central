@@ -14,79 +14,82 @@ use std::env;
 use std::sync::{Arc, Mutex, RwLock};
 use std::time::Duration;
 
+/// Central context for managing DEX liquidity pools, markets, and RPC clients
+///
+/// This structure serves as the shared state across all pool operations, providing
+/// thread-safe access to:
+/// - Market graphs with bidirectional token pair mappings (markets["wsol"]["usdc"] will give you
+/// the same thread safe access as if you did markets["usdc"]["wsol"])
+/// - Protocol-specific pools and vaults
+/// - JSON RPC clients for on-chain data fetching
+/// - Token validation and legitimacy tracking
+/// - Current network state (slot, blockhash)
 pub struct CentralContext {
-  /*
-  RwLock on both layers of the hash map for mutability
-  Arc on the vector for bidirectional reference
-  RwLock on the vector for mutability and adding new markets in
-  RwLock on the pool traits to modify the pools states
-  */
+  /// Bidirectional market graph: token A -> token B -> list of pools
+  ///
+  /// Markets are stored bidirectionally so pools can be looked up by either
+  /// token in the pair. Each pool is wrapped in Arc<RwLock<>> for shared
+  /// ownership and thread-safe access.
+  /// - RwLock on both layers of the hash map for mutability
+  /// - Arc on the vector for bidirectional reference
+  /// - RwLock on the vector for mutability and adding new markets in
+  /// - RwLock on the pool traits to modify the pools states
   pub markets:
     RwLock<HashMap<Pubkey, HashMap<Pubkey, Arc<RwLock<Vec<Arc<RwLock<dyn PoolTrait>>>>>>>>,
+  /// Synchronous JSON RPC client for Solana network requests
   pub json_rpc_client: solana_client::rpc_client::RpcClient,
+  /// Asynchronous JSON RPC client for concurrent network requests
   pub json_rpc_client_async: solana_client::nonblocking::rpc_client::RpcClient,
-  /*
-  The fee rates for Raydium CPMM pools. These should be available throughout the lifetime of the
-  process and available as soon as Raydium decoding starts, so they are placed in the central
-  context. Stored in lamports (10^9 = 1) for high precision.
-  */
+  /// Fee rates for Raydium CPMM pools, keyed by config account address
+  ///
+  /// Stored in lamports (10^9 = 1 SOL) for high precision. Can be loaded during initialization via
+  /// the load_cpmm_pool_configs function and available throughout the process lifetime.
   pub raydium_cpmm_fee_rates_lp: HashMap<Pubkey, u64>,
-  /*
-  The vault cache is wrapped in a mutex to prevent race conditions that can arise when 2 potential
-  meteora liquidity pools can be created and both of those pools are not in the vault. Functions
-  such as get_meteora_vault_from_token_address should only be creating new vaults if they lock the
-  access to the hash map cache. Then they ensure there isn't already a vault there for that token,
-  and then they write a new smart pointer to the vault. This is so that we can ensure that there can
-  only be one meteora vault per token and all references across all pools point to the same vault.
-  */
+  /// Cache of Meteora Ammv1 vaults keyed by token address
+  ///
+  /// Protected by Mutex to ensure only one vault instance exists per token, preventing race
+  /// conditions. Multiple pools should reference the same token vault as only one per token. Avoid
+  /// creating multiple vaults per token.
   pub meteora_vault_cache: Mutex<HashMap<Pubkey, Arc<RwLock<MeteoraVault>>>>,
-  /*
-  Pf bonding curves are just one market and in practice not all will be monitored. They key will be
-  the BONDING CURVE addresses of the bonding curves. The reason why this is a mutex is because there
-  will be cases where we need to exclusively read the bonding curves, and add one if it does not
-  exist. It is a write based on a read scenario.
-  */
+  /// Cache of Pumpfun bonding curves keyed by bonding curve address
+  ///
+  /// Protected by Mutex for thread-safe read-check-write operations when
+  /// creating new bonding curve instances.
   pub pf_bonding_curves: Mutex<HashMap<Pubkey, Arc<RwLock<PfBondingCurve>>>>,
-  /**
-  Raydium Launchpads are also just one market and cannot all be monitored. The key will be the
-  market address, and the value will be the pool itself
-  */
+  /// Cache of Raydium launchpads keyed by launchpad/market address
+  ///
+  /// Protected by Mutex for thread-safe read-check-write operations when
+  /// creating new bonding curve instances.
   pub raydium_launchpads: Mutex<HashMap<Pubkey, Arc<RwLock<RaydiumLaunchpad>>>>,
-  /*
-  Legit tokens. A map of token addresses to boolean legit or not. We consider a token legit if it
-  there exists a metaplex pda for it and if the update authority in the metaplex pda metadata
-  account is from a legit launchpad, such as Raydium Launchpad or Pumpfun Bonding Curve. This is
-  because tokens launched on these reputable launchpads will always have metaplex metadata and the
-  correct update authority.
-
-  Done as a mutex because in many cases you'll atomically lock, check if entry exists, if not
-  lookup and add in an entry.
-  */
+  /// Cache of token legitimacy flags keyed by token address
+  ///
+  /// A token is considered legit if it has Metaplex metadata and the update authority
+  /// matches a reputable launchpad (Raydium Launchpad or Pumpfun Bonding Curve).
+  /// Mutex for lookup and then store if not in cache (write based on read)
   pub legit_tokens: Mutex<HashMap<Pubkey, bool>>,
-  /*
-  A set of all legit update authorities which are used to identify legit tokens.
-  */
+  /// Set of legitimate update authorities used to validate tokens
+  ///
+  /// Contains update authorities from known reputable launchpads (Raydium Launchpad and Pumpfun
+  /// Bonding Curve only for now)
   pub legit_update_authorities: HashSet<Pubkey>,
-  /*
-  A hash map of token accounts and the pools that those token accounts are a part of. The same pool
-  here can be looked up by these 3 Solana pubkey accounts that will be unique to it:
-  Pool address, pool token a vault, pool token b vault.
-  The insert_pool_into_central_context function makes sure to insert new pools into the main markets
-  graph, as well as into this pools map.
-  */
+  /// Map of account addresses to pools for efficient pool lookup
+  ///
+  /// A pool can be looked up by its pool address, token A vault address, or token B vault address.
+  /// Updated automatically when pools are inserted via `insert_pool`.
   pub pools_map: RwLock<HashMap<Pubkey, Arc<RwLock<dyn PoolTrait>>>>,
-  /*
-  The current slot being produced by the network
-  */
+  /// Current slot being produced by the Solana network
   pub current_slot: RwLock<u64>,
-  /*
-  The most recent blockhast produced by the network. This is going to the be the blockhash of slot
-  x - 1 if the current slot on the network is slot x
-  */
+  /// Most recent blockhash produced by the network
+  ///
+  /// Typically the blockhash of slot (current_slot - 1).
   pub latest_blockhash: RwLock<Hash>,
 }
 
 impl CentralContext {
+  /// Create a new `CentralContext` instance
+  ///
+  /// Initializes RPC clients, empty caches, and sets up legitimate update authorities
+  /// from known reputable launchpads. Requires `RPC_NODE_URL` environment variable to be set.
   pub fn new() -> Self {
     let rpc_url = env::var("RPC_NODE_URL").expect("RPC_NODE_URL must be set");
     let json_rpc_client = RpcClient::new_with_timeout(&rpc_url, Duration::from_secs(300));

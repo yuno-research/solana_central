@@ -1,9 +1,8 @@
 use solana_sdk::pubkey::Pubkey;
 
-/*
-Used to deliver high frequency market updates without having to do read locks on the data. It's
-going to be more meant to be used for "pushing" market updates throughout the system
-*/
+/// Used to deliver high frequency market price updates without having to do read locks on the pool
+/// struct that holds the current market state. It's going to be more meant to be used for
+/// "pushing" market updates throughout the system.
 #[repr(C)]
 #[derive(Clone, Debug)]
 pub struct MarketUpdate {

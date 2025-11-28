@@ -1,12 +1,15 @@
-/**
-Given a token address, check and cache if a token is legit or not. Legit token defined in central
-context and explained there.
-*/
-use crate::central_context::central_context::CentralContext;
+use crate::CentralContext;
 use crate::constants::SOLANA_PROGRAMS;
 use solana_sdk::pubkey::Pubkey;
 use std::sync::Arc;
 
+/// Check if a token is legitimate based on its Metaplex metadata
+///
+/// A token is considered legit if:
+/// 1. It has Metaplex metadata
+/// 2. The update authority matches a known legitimate launchpad (Raydium Launchpad or Pumpfun)
+///
+/// Results are cached in the central context for performance.
 pub fn is_legit_token(token_address: &Pubkey, central_context: &Arc<CentralContext>) -> bool {
   let mut legit_tokens = central_context.legit_tokens.lock().unwrap();
   if let Some(legit_token) = legit_tokens.get(token_address) {

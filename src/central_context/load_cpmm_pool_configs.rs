@@ -7,6 +7,10 @@ use solana_client::rpc_config::{RpcAccountInfoConfig, RpcProgramAccountsConfig};
 use solana_client::rpc_filter::RpcFilterType;
 
 impl CentralContext {
+  /// Load Raydium CPMM pool configurations from on-chain data
+  ///
+  /// Fetches all Raydium CPMM pool config accounts and populates the `raydium_cpmm_fee_rates_lp`
+  /// map with fee rates. This should be called during initialization before processing pools.
   pub fn load_cpmm_pool_configs(&mut self) {
     // Fetch the Raydium CPMM pool configs and make a hash map of the pool addresses to their config
     let configs = self

@@ -1,4 +1,4 @@
-use crate::central_context::central_context::CentralContext;
+use crate::CentralContext;
 use crate::constants::{METEORA_CONSTANTS, POOLS_ACCOUNT_SIZES, PUMP_CONSTANTS, RAYDIUM_CONSTANTS};
 use crate::types::meteora_amm_pool::MeteoraAmmPool;
 use crate::types::meteora_dammv2_pool::MeteoraDammV2Pool;
@@ -10,6 +10,10 @@ use solana_sdk::account::Account;
 use solana_sdk::pubkey::Pubkey;
 use std::sync::{Arc, RwLock};
 
+/// Process raw account data from getProgramAccounts into pool instances. Identifies pools by their
+/// program owner and account size, then parses them into the appropriate pool type (Meteora,
+/// Raydium, Pumpswap, etc.). Designed to be called from multiple threads with different slice
+/// ranges.
 pub fn process_get_program_accounts_pool(
   raw_accounts: Arc<Vec<(Pubkey, Account)>>,
   central_context: Arc<CentralContext>,

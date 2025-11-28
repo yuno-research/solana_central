@@ -1,4 +1,4 @@
-// Representation of 1 byte used for efficiency
+/// Enumeration of all supported DEX pool types
 #[repr(u8)]
 #[derive(Debug, Eq, PartialEq, Clone, Copy)]
 pub enum Pools {

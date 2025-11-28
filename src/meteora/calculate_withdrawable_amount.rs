@@ -3,6 +3,10 @@ use crate::types::meteora_vault::MeteoraVault;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 impl MeteoraVault {
+  /// Calculate the withdrawable amount from a Meteora vault
+  ///
+  /// Accounts for locked profit degradation over time. The locked profit gradually
+  /// becomes available based on the degradation rate and time since last report.
   pub fn calculate_withdrawable_amount(&self) -> u64 {
     let current_time: u128 = SystemTime::now()
       .duration_since(UNIX_EPOCH)

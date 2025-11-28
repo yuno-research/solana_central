@@ -1,4 +1,4 @@
-use crate::central_context::central_context::CentralContext;
+use crate::CentralContext;
 use crate::meteora::get_meteora_vault_from_token_address::get_meteora_vault_from_token_address;
 use crate::protocol_idls::meteora::MeteoraAmmPoolIdl;
 use crate::types::meteora_amm_pool::MeteoraAmmPool;
@@ -9,6 +9,11 @@ use solana_sdk::pubkey::Pubkey;
 use std::sync::Arc;
 
 impl MeteoraAmmPool {
+  /// Create a Meteora AMM pool from on-chain account data
+  ///
+  /// Parses the account buffer using the Meteora AMM pool IDL structure and creates
+  /// vault references for both tokens. The vaults are looked up or created via the
+  /// central context cache.
   pub fn from_account_info(
     pubkey: Pubkey,
     account_buffer: &Vec<u8>,

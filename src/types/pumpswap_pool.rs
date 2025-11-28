@@ -1,4 +1,4 @@
-use crate::central_context::central_context::CentralContext;
+use crate::CentralContext;
 use crate::constants::{LAMPORTS_PER_SOL, PUMP_CONSTANTS};
 use crate::types::pool::Pool;
 use crate::types::pool::PoolTrait;
@@ -9,6 +9,8 @@ use std::any::Any;
 use std::sync::Arc;
 
 #[derive(Debug)]
+
+/// Struct to hold data and PoolTrait implementation for Pumpswap pools.
 pub struct PumpswapPool {
   pub info: Pool,
   /*
@@ -248,14 +250,3 @@ impl PoolTrait for PumpswapPool {
     (0.0, total_fee_fraction)
   }
 }
-
-pub const PUMP_SWAP_FEE_VAULTS: [Pubkey; 8] = [
-  Pubkey::from_str_const("62qc2CNXwrYqQScmEdiZFFAnJR262PxWEuNQtxfafNgV"),
-  Pubkey::from_str_const("7VtfL8fvgNfhz17qKRMjzQEXgbdpnHHHQRh54R9jP2RJ"),
-  Pubkey::from_str_const("7hTckgnGnLQR6sdH7YkqFTAA7VwTfYFaZ6EhEsU3saCX"),
-  Pubkey::from_str_const("9rPYyANsfQZw3DnDmKE3YCQF5E8oD89UXoHn9JFEhJUz"),
-  Pubkey::from_str_const("AVmoTthdrX6tKt4nDjco2D775W2YK3sDhxPcMmzUAmTY"),
-  Pubkey::from_str_const("FWsW1xNtWscwNmKv6wVsU1iTzRN6wmmk3MjxRP5tT7hz"),
-  Pubkey::from_str_const("G5UZAVbAf46s7cKWoyKu8kYTip9DGTpbLZ2qa9Aq69dP"),
-  Pubkey::from_str_const("JCRGumoE9Qi5BBgULTgdgTLjSgkCMSbF62ZZfGs84JeU"),
-];

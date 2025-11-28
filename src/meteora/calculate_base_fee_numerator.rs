@@ -1,10 +1,18 @@
-use crate::central_context::central_context::CentralContext;
+use crate::CentralContext;
 use crate::types::meteora_dammv2_pool::MeteoraDammV2Pool;
 use std::cmp;
 use std::sync::Arc;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 impl MeteoraDammV2Pool {
+  /// Calculate the base fee numerator for DAMMv2 pools with fee scheduling
+  ///
+  /// Supports multiple fee modes:
+  /// - Linear decay: Fee decreases linearly over periods
+  /// - Exponential decay: Fee decreases exponentially over periods
+  /// - Rate limiter: Not yet implemented, returns cliff fee
+  ///
+  /// The calculation is based on the activation point and elapsed time/slots since activation.
   pub fn calculate_base_fee_numerator(&self, central_context: &Arc<CentralContext>) -> u64 {
     // Decode overloaded fields based on base_fee_mode
     match self.base_fee_mode {
@@ -13,7 +21,7 @@ impl MeteoraDammV2Pool {
         let number_of_period = self.first_factor;
         let period_frequency = u64::from_le_bytes(self.second_factor);
         let reduction_factor = self.third_factor;
-        
+
         // If period frequency is 0, return cliff fee
         if period_frequency == 0 {
           return self.cliff_fee_numerator;
