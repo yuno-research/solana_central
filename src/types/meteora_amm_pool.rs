@@ -1,6 +1,7 @@
 use crate::central_context::central_context::CentralContext;
 use crate::constants::LAMPORTS_PER_SOL;
 use crate::types::meteora_vault::MeteoraVault;
+use crate::types::swap_direction::SwapDirection;
 use crate::types::pool::Pool;
 use crate::types::pool::PoolTrait;
 use crate::types::pools::Pools;
@@ -134,5 +135,10 @@ impl PoolTrait for MeteoraAmmPool {
       .amount
       .parse()
       .unwrap();
+  }
+
+  fn directional_fees(&self, swap_direction: SwapDirection, _: &Arc<CentralContext>) -> (f64, f64) {
+    // TODO implement properly but Meteora Ammv1 not actively used anymore
+    (1.0, 1.0)
   }
 }

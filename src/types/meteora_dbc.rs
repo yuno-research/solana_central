@@ -3,6 +3,7 @@ use crate::constants::LAMPORTS_PER_SOL;
 use crate::protocol_idls::meteora::DbcVirtualPool;
 use crate::types::pool::{Pool, PoolTrait};
 use crate::types::pools::Pools;
+use crate::types::swap_direction::SwapDirection;
 use borsh::BorshDeserialize;
 use primitive_types::U512;
 use solana_sdk::pubkey::Pubkey;
@@ -211,5 +212,9 @@ impl PoolTrait for MeteoraDbc {
   }
   fn token_b_amount_units(&self) -> u64 {
     self.quote_reserve
+  }
+
+  fn directional_fees(&self, _: SwapDirection, __: &Arc<CentralContext>) -> (f64, f64) {
+    (1.0, 1.0)
   }
 }

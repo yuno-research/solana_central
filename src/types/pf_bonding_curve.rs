@@ -4,6 +4,7 @@ use crate::constants::PUMP_CONSTANTS;
 use crate::constants::TOKENS;
 use crate::types::pool::PoolTrait;
 use crate::types::pools::Pools;
+use crate::types::swap_direction::SwapDirection;
 use solana_sdk::pubkey::Pubkey;
 use std::any::Any;
 use std::sync::Arc;
@@ -40,10 +41,10 @@ impl PoolTrait for PfBondingCurve {
     &Pools::PfBondingCurve
   }
   /*
-  1% in sol amounts both ways on pumpfun bonding curve
+  Never going to call this likely but the fee is 1.25% with 0.95% protocol fee and 0.30% creator fee
   */
   fn total_swap_fee_lp(&self, _: &Arc<CentralContext>) -> u64 {
-    10000000
+    12500000
   }
 
   fn as_any(&self) -> &dyn Any {
@@ -74,7 +75,7 @@ impl PoolTrait for PfBondingCurve {
   This will get real token reserves metric
   */
   fn token_a_amount_units(&self) -> u64 {
-    self.virtual_token_reserves - PUMP_CONSTANTS.bc_init_virtual_token_reserves
+    self.virtual_token_reserves - PUMP_CONSTANTS.bc_init_virtual_token_reserve_diff
   }
 
   /**
@@ -82,5 +83,9 @@ impl PoolTrait for PfBondingCurve {
   */
   fn token_b_amount_units(&self) -> u64 {
     self.virtual_sol_reserves - PUMP_CONSTANTS.bc_init_virtual_sol_reserves
+  }
+
+  fn directional_fees(&self, _: SwapDirection, __: &Arc<CentralContext>) -> (f64, f64) {
+    (1.0, 1.0)
   }
 }

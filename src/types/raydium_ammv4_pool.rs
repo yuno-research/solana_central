@@ -3,9 +3,11 @@ use crate::constants::LAMPORTS_PER_SOL;
 use crate::types::pool::Pool;
 use crate::types::pool::PoolTrait;
 use crate::types::pools::Pools;
+use crate::types::swap_direction::SwapDirection;
 use solana_sdk::pubkey::Pubkey;
 use std::any::Any;
 use std::sync::Arc;
+
 /*
 The only things you actually need to trade on a Raydium AmmV4 at least are these things:
 
@@ -86,5 +88,14 @@ impl PoolTrait for RaydiumAmmV4Pool {
       .amount
       .parse()
       .unwrap();
+  }
+
+  fn directional_fees(&self, swap_direction: SwapDirection, _: &Arc<CentralContext>) -> (f64, f64) {
+    // Fee is taken in the token that is being swapped on the way in
+    if swap_direction == SwapDirection::AToB {
+      (0.0025, 0.0)
+    } else {
+      (0.0, 0.0025)
+    }
   }
 }

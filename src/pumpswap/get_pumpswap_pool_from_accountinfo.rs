@@ -9,7 +9,7 @@ use spl_associated_token_account::get_associated_token_address;
 
 impl PumpswapPool {
   pub fn from_account_info(pubkey: Pubkey, account_buffer: &[u8]) -> Self {
-    let decoded_layout: PumpAmmPoolAccount = PumpAmmPoolAccount::try_from_slice(account_buffer)
+    let decoded_layout: PumpAmmPoolAccount = PumpAmmPoolAccount::try_from_slice(&account_buffer[0..300])
       .expect("Failed to deserialize PumpSwap pool account");
 
     // Randomly pick one of the known fee vaults – same logic as the TS code.

@@ -4,6 +4,7 @@ use crate::protocol_idls::raydium::LaunchpadPoolIdl;
 use crate::types::pool::Pool;
 use crate::types::pool::PoolTrait;
 use crate::types::pools::Pools;
+use crate::types::swap_direction::SwapDirection;
 use borsh::BorshDeserialize;
 use solana_sdk::pubkey::Pubkey;
 use std::any::Any;
@@ -58,15 +59,13 @@ impl PoolTrait for RaydiumLaunchpad {
     &self.info.pool_type
   }
 
-  // Look at chat convo swap fee + share fee + protocol fee which is found in various accounts
-  fn total_swap_fee_lp(&self, central_context: &Arc<CentralContext>) -> u64 {
-    let platform_fee = *central_context
-      .raydium_launchpad_platform_fee_rates_lp
-      .get(&self.platform_config)
-      // Assume that if the fee rate is not found, it will be 100% and we shouldn't swap here
-      .unwrap_or_else(|| &(LAMPORTS_PER_SOL as u64));
-    // Platform fee + the 0.25% protocol fee
-    platform_fee + 2500000
+  /*
+  We never would use this because we'd never do arbitrage on raydium launchpad and we do not take
+  into account for fees or price impact when doing slippage calculation in order to avoid
+  fraudulent platform configs or fee configs that are 100% or something.
+  */
+  fn total_swap_fee_lp(&self, _: &Arc<CentralContext>) -> u64 {
+    panic!("total_swap_fee_lp: Called for Raydium Launchpad, should not be used in prod");
   }
 
   fn as_any(&self) -> &dyn Any {
@@ -97,5 +96,9 @@ impl PoolTrait for RaydiumLaunchpad {
     .unwrap();
     self.real_token_a_reserve = current_pool_state.real_base;
     self.real_token_b_reserve = current_pool_state.real_quote;
+  }
+
+  fn directional_fees(&self, _: SwapDirection, __: &Arc<CentralContext>) -> (f64, f64) {
+    (0.0, 0.0)
   }
 }

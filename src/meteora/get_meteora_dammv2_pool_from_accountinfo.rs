@@ -20,18 +20,19 @@ impl MeteoraDammV2Pool {
         token_b_vault_address: decoded_layout.token_b_vault,
       },
       cliff_fee_numerator: decoded_layout.pool_fees.base_fee.cliff_fee_numerator,
-      fee_scheduler_mode: decoded_layout.pool_fees.base_fee.fee_scheduler_mode,
-      number_of_period: decoded_layout.pool_fees.base_fee.number_of_period,
-      period_frequency: decoded_layout.pool_fees.base_fee.period_frequency,
-      reduction_factor: decoded_layout.pool_fees.base_fee.reduction_factor,
+      base_fee_mode: decoded_layout.pool_fees.base_fee.base_fee_mode,
+      first_factor: decoded_layout.pool_fees.base_fee.first_factor,
+      second_factor: decoded_layout.pool_fees.base_fee.second_factor,
+      third_factor: decoded_layout.pool_fees.base_fee.third_factor,
       protocol_fee_percent: decoded_layout.pool_fees.protocol_fee_percent,
-      partner_fee_percent: decoded_layout.pool_fees.partner_fee_percent,
       referral_fee_percent: decoded_layout.pool_fees.referral_fee_percent,
       initialized: decoded_layout.pool_fees.dynamic_fee.initialized,
       variable_fee_control: decoded_layout.pool_fees.dynamic_fee.variable_fee_control,
       bin_step: decoded_layout.pool_fees.dynamic_fee.bin_step,
+      last_update_timestamp: decoded_layout.pool_fees.dynamic_fee.last_update_timestamp,
+      sqrt_price_reference: decoded_layout.pool_fees.dynamic_fee.sqrt_price_reference,
       volatility_accumulator: decoded_layout.pool_fees.dynamic_fee.volatility_accumulator,
-
+      volatility_reference: decoded_layout.pool_fees.dynamic_fee.volatility_reference,
       activation_point: decoded_layout.activation_point,
       activation_type: decoded_layout.activation_type,
       liquidity: decoded_layout.liquidity,
@@ -43,6 +44,7 @@ impl MeteoraDammV2Pool {
       partner_b_fee: decoded_layout.partner_b_fee,
       sqrt_max_price: decoded_layout.sqrt_max_price,
       sqrt_min_price: decoded_layout.sqrt_min_price,
+      version: decoded_layout.version,
     }
   }
 }

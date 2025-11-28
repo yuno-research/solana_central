@@ -3,6 +3,7 @@ use crate::constants::{LAMPORTS_PER_SOL, PUMP_CONSTANTS};
 use crate::types::pool::Pool;
 use crate::types::pool::PoolTrait;
 use crate::types::pools::Pools;
+use crate::types::swap_direction::SwapDirection;
 use solana_sdk::pubkey::{Pubkey, PubkeyError};
 use std::any::Any;
 use std::sync::Arc;
@@ -42,8 +43,8 @@ impl PumpswapPool {
   */
   pub fn pump_pool_authority_pda(base_mint: &Pubkey) -> Result<Pubkey, PubkeyError> {
     let (pubkey, _) = Pubkey::find_program_address(
-      &[b"pool_authority", base_mint.as_ref()],
-      &PUMP_CONSTANTS.pump_swap_program,
+      &[b"pool-authority", base_mint.as_ref()],
+      &PUMP_CONSTANTS.bonding_curve_program,
     );
     Ok(pubkey)
   }
@@ -54,8 +55,15 @@ impl PumpswapPool {
   */
   pub fn is_canonical_pool(&self) -> bool {
     if let Ok(pump_authority_pda) = Self::pump_pool_authority_pda(&self.info.token_a_address) {
-      self.pool_creator == pump_authority_pda
+      let is_canonical = self.pool_creator == pump_authority_pda;
+      // println!("[PumpSwap] Pool: {}", self.info.pool_address);
+      // println!("[PumpSwap] Base mint (token_a): {}", self.info.token_a_address);
+      // println!("[PumpSwap] Pool creator: {}", self.pool_creator);
+      // println!("[PumpSwap] Derived PDA: {}", pump_authority_pda);
+      // println!("[PumpSwap] Is canonical: {}", is_canonical);
+      is_canonical
     } else {
+      // println!("[PumpSwap] Failed to derive PDA for base mint: {}", self.info.token_a_address);
       false
     }
   }
@@ -87,17 +95,28 @@ impl PumpswapPool {
       .saturating_mul(base_mint_supply as u128)
       .saturating_div(self.token_a_vault_amount as u128) as u64;
 
+      // println!("Market cap: {}", market_cap_lamports);
     Some(market_cap_lamports)
   }
 
   /*
   Returns the fee breakdown for canonical pools: (creator_fee, protocol_fee, lp_fee)
   All values in lamports per SOL (basis points * 10_000)
+  
+  Matches the fee tier table from PumpSwap documentation.
+  Market cap thresholds are in lamports (1 SOL = 1_000_000_000 lamports)
   */
   pub fn get_canonical_fee_breakdown(&self) -> (u64, u64, u64) {
     let market_cap_lamports = match self.calculate_market_cap_lamports() {
-      Some(market_cap) => market_cap,
-      None => return (3000000, 9300000, 200000), // Default to 1.250% breakdown
+      Some(market_cap) => {
+        // println!("[PumpSwap] Market cap: {} lamports ({} SOL)", 
+        //   market_cap, market_cap as f64 / 1_000_000_000.0);
+        market_cap
+      },
+      None => {
+        println!("[PumpSwap] Could not calculate market cap, using default fees");
+        return (3_000_000, 9_300_000, 200_000); // Default to 1.250% breakdown
+      }
     };
 
     // Fee breakdown based on market cap (Creator, Protocol, LP)
@@ -137,6 +156,7 @@ impl PumpswapPool {
   */
   pub fn get_fee_breakdown(&self) -> (u64, u64, u64) {
     if self.is_canonical_pool() {
+      // println!("It is a canonical pool");
       self.get_canonical_fee_breakdown()
     } else {
       (0, 500_000, 2_500_000) // Non-canonical: 0% creator, 0.05% protocol, 0.25% LP
@@ -180,7 +200,7 @@ impl PoolTrait for PumpswapPool {
   For canonical pools, fees range from 1.250% (0-420 SOL) to 0.300% (98240+ SOL)
   For non-canonical pools, fixed 0.300% total fee (no creator fees)
   */
-  fn total_swap_fee_lp(&self, _central_context: &Arc<CentralContext>) -> u64 {
+  fn total_swap_fee_lp(&self, _: &Arc<CentralContext>) -> u64 {
     // Get fee breakdown and sum them up
     let (creator_fee, protocol_fee, lp_fee) = self.get_fee_breakdown();
     creator_fee + protocol_fee + lp_fee
@@ -217,6 +237,15 @@ impl PoolTrait for PumpswapPool {
       .amount
       .parse()
       .unwrap();
+  }
+
+  fn directional_fees(&self, _: SwapDirection, central_context: &Arc<CentralContext>) -> (f64, f64) {
+    // PumpSwap ALWAYS collects fees in the QUOTE token (Token B = WSOL)
+    // Direction doesn't matter - it's always (0.0, total_fee)
+    // This is different from Meteora DAMMV2 which can vary by direction
+    let total_fee_fraction = self.total_swap_fee_lp(central_context) as f64 / 1_000_000_000.0;
+    println!("[PumpSwap] Total fee: {}%", total_fee_fraction * 100.0);
+    (0.0, total_fee_fraction)
   }
 }
 
