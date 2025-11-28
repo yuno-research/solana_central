@@ -1,15 +1,18 @@
-use crate::central_context::central_context::CentralContext;
+use crate::CentralContext;
 use crate::constants::LAMPORTS_PER_SOL;
 use crate::constants::PUMP_CONSTANTS;
 use crate::constants::TOKENS;
+use crate::protocol_idls::pumpfun::PfBondingCurveIdl;
 use crate::types::pool::PoolTrait;
 use crate::types::pools::Pools;
 use crate::types::swap_direction::SwapDirection;
+use borsh::BorshDeserialize;
 use solana_sdk::pubkey::Pubkey;
 use std::any::Any;
 use std::sync::Arc;
 
 #[derive(Debug)]
+/// Struct to hold data and PoolTrait implementation for Pumpfun Bonding Curve pools/markets.
 pub struct PfBondingCurve {
   pub virtual_sol_reserves: u64,
   pub virtual_token_reserves: u64,
@@ -69,7 +72,13 @@ impl PoolTrait for PfBondingCurve {
       .get_account(&self.bonding_curve_address)
       .unwrap()
       .data;
-    self.update_state_from_data(&data);
+
+    // Deserialize the account buffer into a BondingCurveAccount
+    let decoded_layout: PfBondingCurveIdl = PfBondingCurveIdl::try_from_slice(&data).unwrap();
+    // Update the bonding curve state
+    self.virtual_sol_reserves = decoded_layout.virtual_sol_reserves;
+    self.virtual_token_reserves = decoded_layout.virtual_token_reserves;
+    self.complete = decoded_layout.complete;
   }
   /**
   This will get real token reserves metric
