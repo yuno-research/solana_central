@@ -74,7 +74,7 @@ impl PoolTrait for PfBondingCurve {
       .data;
 
     // Deserialize the account buffer into a BondingCurveAccount
-    let decoded_layout: PfBondingCurveIdl = PfBondingCurveIdl::try_from_slice(&data).unwrap();
+    let decoded_layout: PfBondingCurveIdl = PfBondingCurveIdl::try_from_slice(&data[..150]).unwrap();
     // Update the bonding curve state
     self.virtual_sol_reserves = decoded_layout.virtual_sol_reserves;
     self.virtual_token_reserves = decoded_layout.virtual_token_reserves;

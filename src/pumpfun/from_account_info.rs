@@ -28,7 +28,7 @@ impl PfBondingCurve {
   ```
   */
   pub fn from_account_info(token_address: Pubkey, account_buffer: &[u8]) -> Self {
-    let decoded_layout = PfBondingCurveIdl::try_from_slice(account_buffer)
+    let decoded_layout = PfBondingCurveIdl::try_from_slice(&account_buffer[..150])
       .expect("Failed to deserialize Pf Bonding Curve account");
 
     let (creator_vault_address, _) = Pubkey::find_program_address(
